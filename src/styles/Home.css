@@ -22,7 +22,8 @@
   font-weight: 500;
 }
 
-.buy_btn {
+.login_btn,
+.signup_btn {
   border: none;
   outline: none;
   padding: 8px 20px;
@@ -34,8 +35,14 @@
   margin-top: 35px;
 }
 
-.buy_btn a:hover {
+.login_btn a:hover,
+.signin_btn a:hover {
   color: #fff;
+}
+
+.login_btn {
+  margin: 0px 10px;
+  background: rgb(165, 192, 216);
 }
 
 .hero_content {

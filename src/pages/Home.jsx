@@ -21,8 +21,12 @@ const Home = () => {
                   pariatur ut commodi error asperiores natus sequi, facere quae
                   quia dolorum itaque!
                 </p>
-                <motion.button whileTap={{ scale: 1.2 }} className="buy_btn">
-                  <Link to="/shop">SIGNUP NOW</Link>
+                <motion.button whileTap={{ scale: 1.2 }} className="signup_btn">
+                  <Link to="/signup">SIGNUP NOW</Link>
+                </motion.button>
+
+                <motion.button whileTap={{ scale: 1.2 }} className="login_btn">
+                  <Link to="/login">Login</Link>
                 </motion.button>
               </div>
             </Col>

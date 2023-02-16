@@ -26,3 +26,12 @@
   font-weight: 700;
   color: var(--primary-color);
 }
+
+.btn_login {
+  background-color: rgb(187, 205, 221);
+  border: none;
+  border-radius: 12px;
+  width: 90px;
+  margin: 10px;
+  padding: 0px 20px;
+}
