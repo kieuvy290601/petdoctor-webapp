@@ -2,12 +2,13 @@ import React from "react";
 import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 
+import { Link } from "react-router-dom";
 import heroImg from "../assets/images/signup-img.png";
 import "../styles/Signup.css";
 
 const Signup = () => {
   return (
-    <Helmet title={"Home"}>
+    <Helmet title={"Signup"}>
       <section className="hero_section">
         <Container>
           <Row>
@@ -33,9 +34,13 @@ const Signup = () => {
 
                 <input type="file" />
 
-                <button type="submit" className="signupbtn">
+                <button type="submit" className="signup_btn">
                   Sign Up
                 </button>
+
+                <p>
+                  Don't have an account? <Link to="/login"> Log In</Link>
+                </p>
               </Form>
             </Col>
           </Row>
