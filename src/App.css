@@ -54,3 +54,9 @@ a {
   text-decoration: none;
   color: unset;
 }
+img {
+  width: 105%;
+}
+section {
+  padding: 60px 0px;
+}
