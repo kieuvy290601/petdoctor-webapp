@@ -1,0 +1,43 @@
+h1 {
+  color: rgb(36, 36, 83);
+}
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 15px 0;
+  display: inline-block;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  border-radius: 15px;
+  border: 0;
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+}
+h1 {
+  font-weight: 800;
+}
+
+label {
+  font-size: 18px;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.signupbtn {
+  float: left;
+  width: 100%;
+  border-radius: 15px;
+  border: 0;
+  background-color: #4caf50;
+  color: #f1f1f1;
+  padding: 14px 20px;
+  margin: 20px 0;
+}

@@ -23,8 +23,8 @@
 .logo h1 {
   padding-top: 5px;
   font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--primary-color);
+  font-weight: 850;
+  color: rgb(56, 62, 99);
 }
 
 .btn_login {
