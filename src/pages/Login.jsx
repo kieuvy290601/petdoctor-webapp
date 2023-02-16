@@ -30,7 +30,7 @@ const Login = () => {
 
                 <input type="password" placeholder="Password" />
 
-                <button type="submit" className="login_btn">
+                <button type="submit" className="button_login">
                   Log In
                 </button>
 

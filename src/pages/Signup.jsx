@@ -34,7 +34,7 @@ const Signup = () => {
 
                 <input type="file" />
 
-                <button type="submit" className="signup_btn">
+                <button type="submit" className="button_signup">
                   Sign Up
                 </button>
 

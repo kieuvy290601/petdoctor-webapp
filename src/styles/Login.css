@@ -28,7 +28,7 @@ button:hover {
   opacity: 1;
 }
 
-.login_btn {
+.button_login {
   float: left;
   width: 100%;
   border-radius: 15px;
