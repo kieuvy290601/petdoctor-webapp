@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { auth } from "../firebase.config";
+import { db, storage } from "../firebase.config.js";
 
-import { Link } from "react-router-dom";
 import heroImg from "../assets/images/signup-img.png";
 import "../styles/Signup.css";
 
@@ -13,10 +16,14 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [file, setFile] = useState(false);
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const signup = async (e) => {
     e.preventDefault();
+    setLoading(false);
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -26,8 +33,33 @@ const Signup = () => {
       );
 
       const user = userCredential.user;
-      console.log(user);
-    } catch (error) {}
+
+      const storageRef = ref(storage, `images/${Date.now() + username}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        (error) => {
+          console.log("Something went wrong");
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            await setDoc(doc(db, "users", user.uid), {
+              uid: user.uid,
+              displayName: username,
+              email,
+              photoURL: downloadURL,
+            });
+          });
+        }
+      );
+
+      setLoading(true);
+      console.log("Account created");
+      navigate("/login");
+    } catch (error) {
+      setLoading(false);
+      console.log("Something went wrong");
+    }
   };
 
   return (
