@@ -17,13 +17,13 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  //const [setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const signup = async (e) => {
     e.preventDefault();
-    setLoading(false);
+    //setLoading(false);
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -53,11 +53,11 @@ const Signup = () => {
         }
       );
 
-      setLoading(true);
+      //setLoading(true);
       console.log("Account created");
       navigate("/login");
     } catch (error) {
-      setLoading(false);
+      //setLoading(false);
       console.log("Something went wrong");
     }
   };
