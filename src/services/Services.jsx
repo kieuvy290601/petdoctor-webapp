@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { Col, Container, Row } from "reactstrap";
 import serviceData from "../assets/data/serviceData";
-// import dogIc from "../assets/images/dog.png";
+
 import "../styles/Services.css";
 
 const Services = () => {

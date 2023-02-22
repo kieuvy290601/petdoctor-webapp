@@ -7,6 +7,7 @@ import Helmet from "../components/Helmet/Helmet";
 import landImg from "../assets/images/homepage-landing.png";
 import "../styles/Home.css";
 
+import CustomerRates from "../components/Customer Rate/CustomerRates";
 import Services from "../services/Services";
 
 const Home = () => {
@@ -23,7 +24,7 @@ const Home = () => {
                   ready to take care of it properly.
                 </p>
                 <motion.button whileTap={{ scale: 1.2 }} className="signup_btn">
-                  <Link to="/signup">Our Service </Link>
+                  <Link to="/signup">Get started </Link>
                 </motion.button>
               </div>
             </Col>
@@ -38,6 +39,7 @@ const Home = () => {
       </section>
 
       <Services />
+      <CustomerRates />
     </Helmet>
   );
 };
