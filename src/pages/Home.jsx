@@ -18,7 +18,8 @@ const Home = () => {
           <Row>
             <Col lg="5" md="5">
               <div className="hero_content">
-                <h2>Your Pet care center</h2>
+                <h2>We're Here to Care of </h2>
+                <h2 style={{ color: "#5faf91", fontSize: 60 }}>Little Pets</h2>
                 <p>
                   Before you bring home your pet, be sure you're <br />
                   ready to take care of it properly.

@@ -101,6 +101,7 @@ const Signup = () => {
 
                 <input
                   type="file"
+                  className="form-control"
                   onChange={(e) => setFile(e.target.files[0])}
                 />
 
