@@ -11,7 +11,7 @@ const Subscribe = () => {
           <Col lg="12" className="text-center">
             <h2 className="subscribe_title" style={{ fontWeight: 700 }}>
               Subscribe{" "}
-              <span style={{ color: "#5faf91", fontWeight: 700 }}>
+              <span style={{ color: "#006d77", fontWeight: 700 }}>
                 Our Newsletter
               </span>{" "}
               <br />& Get News Related Pet Care
@@ -35,7 +35,7 @@ const Subscribe = () => {
                   <button
                     type="button"
                     class="btn text-white btn-rounded"
-                    style={{ backgroundColor: "#5faf91" }}
+                    style={{ backgroundColor: "#006d77" }}
                   >
                     Subscribe
                   </button>

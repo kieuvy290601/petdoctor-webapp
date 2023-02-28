@@ -12,13 +12,11 @@ const Services = () => {
         <Row>
           <Col lg="12" className="text-center">
             <h2 className="section_title" style={{ fontWeight: 700 }}>
-              We World's
-              {
-                <span style={{ color: "#5faf91", fontWeight: 700 }}>
-                  {" "}
-                  Best Team{" "}
-                </span>
-              }{" "}
+              We World's{" "}
+              <span style={{ color: "#006d77", fontWeight: 700 }}>
+                Best Team
+              </span>{" "}
+              <br />
               For Pet Services
             </h2>
           </Col>
