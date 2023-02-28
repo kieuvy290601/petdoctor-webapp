@@ -9,6 +9,7 @@ import "../styles/Home.css";
 
 import CustomerRates from "../components/CustomerRate/CustomerRates";
 import Services from "../services/Services";
+import Subscribe from "./Subscribe";
 
 const Home = () => {
   return (
@@ -41,6 +42,7 @@ const Home = () => {
 
       <Services />
       <CustomerRates />
+      <Subscribe />
     </Helmet>
   );
 };
