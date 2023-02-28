@@ -7,7 +7,7 @@ import Helmet from "../components/Helmet/Helmet";
 import landImg from "../assets/images/homepage-landing.png";
 import "../styles/Home.css";
 
-import CustomerRates from "../components/Customer Rate/CustomerRates";
+import CustomerRates from "../components/CustomerRate/CustomerRates";
 import Services from "../services/Services";
 
 const Home = () => {

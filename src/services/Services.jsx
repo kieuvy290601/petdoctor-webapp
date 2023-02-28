@@ -10,6 +10,18 @@ const Services = () => {
     <section className="Services">
       <Container>
         <Row>
+          <Col lg="12" className="text-center">
+            <h2 className="section_title" style={{ fontWeight: 700 }}>
+              We World's
+              {
+                <span style={{ color: "#5faf91", fontWeight: 700 }}>
+                  {" "}
+                  Best Team{" "}
+                </span>
+              }{" "}
+              For Pet Services
+            </h2>
+          </Col>
           {serviceData.map((item, index) => (
             <Col key={index}>
               <motion.div
