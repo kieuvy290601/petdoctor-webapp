@@ -32,11 +32,7 @@ const Subscribe = () => {
                   />
                 </div>
                 <div class="form-group">
-                  <button
-                    type="button"
-                    class="btn text-white btn-rounded"
-                    style={{ backgroundColor: "#006d77" }}
-                  >
+                  <button type="button" class="btn_sub text-white btn-rounded">
                     Subscribe
                   </button>
                 </div>

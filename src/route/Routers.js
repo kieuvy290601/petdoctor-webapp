@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
+import AddProduct from "../pages/AddProduct";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import MediCare from "../pages/MediCare";
@@ -25,6 +26,7 @@ const Routers = () => {
         }
       />
       <Route path="medicare" element={<MediCare />} />
+      <Route path="addproduct" element={<AddProduct />} />
     </Routes>
   );
 };

@@ -3,7 +3,7 @@ h3,
   font-size: 30px;
 }
 
-.btn {
+.btn_sub {
   font-size: 16px;
   font-family: "Poppins", sans-serif;
   text-transform: capitalize;
@@ -15,4 +15,5 @@ h3,
   z-index: 1;
   transition: 0.3s ease-in;
   overflow: hidden;
+  background-color: #038692;
 }
