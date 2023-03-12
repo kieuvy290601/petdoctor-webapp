@@ -41,7 +41,13 @@ const ProductsList = () => {
     fetchData();
   }, []);
   return (
-    <div className="d-flex align-items-center">
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-evenly",
+      }}
+    >
       {data.map((item) => (
         <ProductCard key={item.id} item={item} />
       ))}

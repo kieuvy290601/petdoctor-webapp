@@ -1,0 +1,20 @@
+.img {
+  background-image: url("../assets/images/banner.png");
+  background-size: cover;
+  height: 300px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.shop_title {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.dropdown .btn_drCate {
+  border-radius: 20px;
+  background: #d3d3d3;
+  border: none;
+  width: 150px;
+  height: 40px;
+}
