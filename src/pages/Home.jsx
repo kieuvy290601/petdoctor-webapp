@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Col, Container, Row } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 
-import landImg from "../assets/images/homepage-landing.png";
+import landImg from "../assets/images/homeImg.png";
 import "../styles/Home.css";
 
 import CustomerRates from "./CustomerRates";
@@ -20,7 +20,7 @@ const Home = () => {
             <Col lg="5" md="5">
               <div className="hero_content">
                 <h2>We're Here to Care of </h2>
-                <h2 style={{ color: "#006d77", fontSize: 60 }}>Little Pets</h2>
+                <h2 style={{ color: "#006d77", fontSize: 75 }}>Little Pets</h2>
                 <p>
                   Before you bring home your pet, be sure you're <br />
                   ready to take care of it properly.

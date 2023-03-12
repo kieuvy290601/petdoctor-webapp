@@ -3,7 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Col, Container, Row } from "reactstrap";
-import heroImg from "../assets/images/landing.png";
+import heroImg from "../assets/images/splashImg.png";
 import Helmet from "../components/Helmet/Helmet";
 import "../styles/Splash.css";
 

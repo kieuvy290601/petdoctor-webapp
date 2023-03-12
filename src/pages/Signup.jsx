@@ -9,7 +9,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { auth } from "../firebase.config";
 import { db, storage } from "../firebase.config.js";
 
-import heroImg from "../assets/images/signup-img.png";
+import heroImg from "../assets/images/loginImg.png";
 import "../styles/Signup.css";
 
 const Signup = () => {

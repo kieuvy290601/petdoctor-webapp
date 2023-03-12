@@ -6,7 +6,7 @@ import Helmet from "../components/Helmet/Helmet";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase.config";
 
-import heroImg from "../assets/images/signup-img.png";
+import heroImg from "../assets/images/loginImg.png";
 import "../styles/Login.css";
 
 const Login = () => {

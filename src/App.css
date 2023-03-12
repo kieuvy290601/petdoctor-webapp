@@ -1,6 +1,5 @@
 /* google fonts */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&family=Tilt+Neon&display=swap");
 /*  css variables */
 :root {
   --card-bg-01: #fdefe6;
@@ -22,7 +21,7 @@
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Tilt Neon", cursive;
 }
 
 h1,
@@ -55,10 +54,10 @@ a {
   color: unset;
 }
 img {
-  width: 105%;
+  width: 100%;
 }
 section {
-  padding: 60px 0px;
+  padding: 45px 0px;
 }
 
 .section_title {

@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Container, Row } from "reactstrap";
 
+import avatar from "../../assets/images/avatar.png";
 import logo from "../../assets/images/logoww.png";
-import user from "../../assets/images/user-icon.png";
 import "./Header.css";
 
 const nav_links = [
@@ -92,7 +92,7 @@ const Header = () => {
                 <span className="badge">1</span>
               </span>
               <span>
-                <motion.img whileTap={{ scale: 1.2 }} src={user} alt="" />
+                <motion.img whileTap={{ scale: 1.2 }} src={avatar} alt="" />
               </span>
               <div className="mobile_menu">
                 <span>

@@ -19,34 +19,40 @@ const AddProduct = () => {
   const createData = async (e) => {
     e.preventDefault();
 
-    try {
-      const storageRef = ref(storage, `productImg/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+    // try {
+    const storageRef = ref(storage, `productImg/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-      uploadTask.on(
-        (error) => {
-          console.log("Something went wrong");
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await addDoc(collection(db, "products"), {
-              prdName: name,
-              prdPrice: price,
-              prdCategory: category,
-              prdQuantity: quantity,
-              prdDesc: description,
-              prdURL: downloadURL,
-            });
+    uploadTask.on(
+      (error) => {
+        console.log("Something went wrong");
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+          await addDoc(collection(db, "products"), {
+            prdName: name,
+            prdPrice: price,
+            prdCategory: category,
+            prdQuantity: quantity,
+            prdDesc: description,
+            prdURL: downloadURL,
           });
-        }
-      );
+        });
+      }
+    );
 
-      //setLoading(true);
-      console.log("Added product successfully");
-    } catch (error) {
-      //setLoading(false);
-      console.log("Something went wrong");
-    }
+    // await setDoc(doc(db, "cities", "LA"), {
+    //   name: "Los Angeles",
+    //   state: "CA",
+    //   country: "USA",
+    // });
+
+    //setLoading(true);
+    console.log("Added product successfully");
+    // } catch (error) {
+    //   //setLoading(false);
+    //   console.log("Something went wrong");
+    // }
   };
 
   return (
@@ -89,11 +95,13 @@ const AddProduct = () => {
           <div className="row gx-3">
             <div className="col-md-6">
               <label className="mb-2">Category</label>
+
               <select
                 className="form-select"
                 value={category}
                 onChange={(e) => setProductCategory(e.target.value)}
               >
+                <option>Choose category</option>
                 <option>Vaccine</option>
                 <option>Medicine</option>
                 <option>Food</option>
