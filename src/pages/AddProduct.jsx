@@ -1,6 +1,7 @@
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form } from "reactstrap";
 import { db, storage } from "../firebase.config";
 
@@ -8,18 +9,18 @@ import "../styles/AddProduct.css";
 
 const AddProduct = () => {
   const [name, setProductName] = useState("");
+  const [pet, setPet] = useState("");
   const [price, setProductPrice] = useState(0);
   const [category, setProductCategory] = useState("");
   const [quantity, setProductQuantity] = useState(0);
   const [description, setProducDescription] = useState("");
-  // const [img, setProductImage] = useState(null);
-  // const [error, setError] = useState(null);
   const [file, setFile] = useState("");
+
+  const navigate = useNavigate();
 
   const createData = async (e) => {
     e.preventDefault();
 
-    // try {
     const storageRef = ref(storage, `productImg/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -31,6 +32,7 @@ const AddProduct = () => {
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           await addDoc(collection(db, "products"), {
             prdName: name,
+            prdPet: pet,
             prdPrice: price,
             prdCategory: category,
             prdQuantity: quantity,
@@ -41,16 +43,9 @@ const AddProduct = () => {
       }
     );
 
-    // await setDoc(doc(db, "cities", "LA"), {
-    //   name: "Los Angeles",
-    //   state: "CA",
-    //   country: "USA",
-    // });
-
-    //setLoading(true);
     console.log("Added product successfully");
+    navigate("/medicare");
     // } catch (error) {
-    //   //setLoading(false);
     //   console.log("Something went wrong");
     // }
   };
@@ -69,6 +64,19 @@ const AddProduct = () => {
               value={name}
               onChange={(e) => setProductName(e.target.value)}
             />
+          </div>
+          <div className="col-md-6 mb-3">
+            <label className="mb-2">Choose Pet</label>
+
+            <select
+              className="form-select"
+              value={pet}
+              onChange={(e) => setPet(e.target.value)}
+            >
+              <option>Choose pet</option>
+              <option value="Dog">Dog</option>
+              <option value="Cat">Cat</option>
+            </select>
           </div>
           <div className="row gx-3">
             <div className="col-md-6">
@@ -102,9 +110,9 @@ const AddProduct = () => {
                 onChange={(e) => setProductCategory(e.target.value)}
               >
                 <option>Choose category</option>
-                <option>Vaccine</option>
-                <option>Medicine</option>
-                <option>Food</option>
+                <option value="Vaccine">Vaccine</option>
+                <option value="Medicine">Medicine</option>
+                <option value="Food">Food</option>
               </select>
             </div>
             <div className="col-md-6">

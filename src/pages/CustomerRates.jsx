@@ -172,8 +172,8 @@ const CustomerRates = () => {
               </ul>
               <p class="mb-2">
                 <i class="fas fa-quote-left pe-2"></i>Autem, totam debitis
-                suscipit saepe sapiente magnam officiis quaerat necessitatibus
-                odio assumenda perferendis labore laboriosam.
+                suscipit saepe sapiente magnam officiis quaerat odio assumenda
+                perferendis labore laboriosam.
               </p>
             </div>
           </div>
@@ -213,8 +213,8 @@ const CustomerRates = () => {
               </ul>
               <p class="mb-2">
                 <i class="fas fa-quote-left pe-2"></i>Cras sit amet nibh libero,
-                in gravida nulla metus scelerisque ante sollicitudin commodo
-                cras purus odio, vestibulum in tempus viverra turpis.
+                in gravida nulla metus scelerisque ante commodo cras purus odio,
+                vestibulum in tempus viverra turpis.
               </p>
             </div>
           </div>
