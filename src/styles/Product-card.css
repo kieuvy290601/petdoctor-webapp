@@ -2,6 +2,9 @@
   color: var(--primary-color);
   font-weight: 600;
 }
+.product_img {
+  height: 250px;
+}
 
 .product_item {
   cursor: pointer;

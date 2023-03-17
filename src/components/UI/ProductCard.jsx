@@ -6,13 +6,29 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../../redux/slices/cartSlice";
 
+
+
+
 import "../../styles/Product-card.css";
 
-const ProductCard = ({ item, searchInput,  }) => {
+const ProductCard = ({ item, searchInput, }) => {
   
-  const { prdName } = item;
+  const dispatch = useDispatch(); 
 
+  const { prdName } = item;
   const isMatch = prdName.toLowerCase().includes(searchInput.toLowerCase());
+
+  const addtoCart = () => {
+    dispatch(
+      cartActions.addItemtoCart({
+        prdId: item.id,
+        prdName: item.prdName,
+        prdPrice: item.prdPrice,
+        prdURL: item.prdURL,
+      })
+    );
+    toast.success("Added to cart successfully");
+  };
 
   
   if (!searchInput || isMatch) {
@@ -33,7 +49,7 @@ const ProductCard = ({ item, searchInput,  }) => {
         justify-content-between p-2"
         >
           <span className="price">${item.prdPrice}</span>
-          <motion.span whileTap={{ scale: 1.2 }}>
+          <motion.span whileTap={{ scale: 1.2 }} onClick={addtoCart}>
             <i class="ri-add-line"></i>
           </motion.span>
         </div>

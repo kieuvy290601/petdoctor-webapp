@@ -1,9 +1,12 @@
-import "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import ProductCard from "../components/UI/ProductCard";
+
+import "firebase/auth";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
+
+import notfound from "../assets/images/nofound.png";
 import "../styles/Medi-care.css";
 
 const DogPharm = () => {
@@ -34,42 +37,6 @@ const DogPharm = () => {
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
-
-  // const [selectedOption, setSelectedOption] = useState("all");
-  // const [filteredData, setFilteredData] = useState([]);
-  // const [searchTerm, setSearchTerm] = useState("");
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const q = query(
-  //       collection(db, "products"),
-  //       selectedOption === "all"
-  //         ? null
-  //         : where("prdCategory", "==", selectedOption)
-  //     );
-
-  //     const querySnapshot = await getDocs(q);
-
-  //     const data = querySnapshot.docs.map((doc) => doc.data());
-
-  //     if (searchTerm.trim() !== "") {
-  //       const filtered = data.filter(
-  //         (item) =>
-  //           item.prdName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //           item.prdCategory.toLowerCase().includes(searchTerm.toLowerCase())
-  //       );
-  //       setFilteredData(filtered);
-  //     } else {
-  //       setFilteredData(data);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [selectedOption, searchTerm]);
-
-  // const handleOptionChange = (event) => {
-  //   setSelectedOption(event.target.value);
-  // };
 
   return (
     <section className="all_products">
@@ -132,8 +99,15 @@ const DogPharm = () => {
               justifyContent: "space-evenly",
             }}
           >
-            {filteredData.length === 0 ?  (
-              <h1>No products are found!</h1>
+            { filteredData.length === 0 ?  (
+              <div>
+                <img
+                  style={{ width: 90, marginLeft: 90 }}
+                  src={notfound}
+                  alt=""
+                />
+                <h4>No products are found!</h4>
+              </div>
             ) : (
               filteredData.map((item) => (
                 <ProductCard
