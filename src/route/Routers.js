@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 
 import AddProduct from "../pages/AddProduct";
+import DogPharm from "../pages/DogPharm";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
-import MediCare from "../pages/MediCare";
 import Profile from "../pages/Profile";
 import Signup from "../pages/Signup";
 import Splash from "../pages/Splash";
@@ -25,7 +25,7 @@ const Routers = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="medicare" element={<MediCare />} />
+      <Route path="dogcare" element={<DogPharm />} />
       <Route path="addproduct" element={<AddProduct />} />
     </Routes>
   );

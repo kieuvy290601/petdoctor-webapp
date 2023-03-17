@@ -44,7 +44,7 @@ const AddProduct = () => {
     );
 
     console.log("Added product successfully");
-    navigate("/medicare");
+    navigate("/dogcare");
     // } catch (error) {
     //   console.log("Something went wrong");
     // }

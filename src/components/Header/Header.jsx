@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { Container, Row } from "reactstrap";
 
@@ -17,8 +18,12 @@ const nav_links = [
     display: "Services",
   },
   {
-    path: "medicare",
-    display: "Medi-Care",
+    path: "dogcare",
+    display: "Dog-Pharmacy",
+  },
+  {
+    path: "catcare",
+    display: "Cat-Pharmacy",
   },
   {
     path: "cart",
@@ -28,6 +33,8 @@ const nav_links = [
 
 const Header = () => {
   const headerRef = useRef(null);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+
   const stickyHeader = () => {
     window.addEventListener("scroll", () => {
       if (
@@ -59,7 +66,7 @@ const Header = () => {
                 </Link>
               </div>
               <div>
-                <h1>PET DOCTOR</h1>
+                <h1>PETOPIA</h1>
               </div>
             </div>
 
@@ -89,7 +96,7 @@ const Header = () => {
               </span>
               <span className="cart_icon">
                 <i class="ri-shopping-cart-line"></i>
-                <span className="badge">1</span>
+                <span className="badge">{totalQuantity}</span>
               </span>
               <span>
                 <motion.img whileTap={{ scale: 1.2 }} src={avatar} alt="" />

@@ -14,7 +14,7 @@ const Footer = () => {
             <div className="logo">
               {/* <img src={logo} alt="" /> */}
               <div>
-                <h1 className="text-white">PET DOCTOR</h1>
+                <h1 className="text-white">PETOPIA</h1>
               </div>
             </div>
             <p className="footer_text mt-4">
