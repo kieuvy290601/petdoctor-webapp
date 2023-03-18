@@ -3,7 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import ProductCard from "../components/UI/ProductCard";
 
 import "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 import notfound from "../assets/images/nofound.png";
@@ -13,6 +13,10 @@ const DogPharm = () => {
   const [selectedOption, setSelectedOption] = useState("all");
   const [filteredData, setFilteredData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [sortOption, setSortOption] = useState({
+    field: "prdName",
+    value: "desc",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,7 +24,8 @@ const DogPharm = () => {
         collection(db, "products"),
         selectedOption === "all"
           ? null
-          : where("prdCategory", "==", selectedOption)
+          : where("prdCategory", "==", selectedOption),
+        orderBy(sortOption.field, sortOption.value)
       );
 
       const querySnapshot = await getDocs(q);
@@ -32,10 +37,24 @@ const DogPharm = () => {
     };
 
     fetchData();
-  }, [selectedOption]);
+  }, [selectedOption, sortOption]);
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+  };
+
+  const handleSortOptionChange = (event) => {
+    var orderByOption = event.target.value;
+    console.log("sort option changed: " + orderByOption);
+
+    if (orderByOption === "") {
+      setSortOption({ field: "prdName", value: "asc" });
+    } else {
+      setSortOption({
+        field: "prdPrice",
+        value: sortOption.value === "asc" ? "desc" : "asc",
+      });
+    }
   };
 
   return (
@@ -80,10 +99,10 @@ const DogPharm = () => {
                   </Col>
                   <Col lg="2" md="3">
                     <div className="filter">
-                      <select name="" id="">
-                        <option>Sort By</option>
-                        <option value="ascending">Ascending</option>
-                        <option value="descending">Descending</option>
+                      <select name="" id="" onClick={handleSortOptionChange}>
+                        <option value="">Sort By</option>
+                        <option value="price">Price</option>
+                        <option value="desc">Descending</option>
                       </select>
                     </div>
                   </Col>
@@ -99,7 +118,7 @@ const DogPharm = () => {
               justifyContent: "space-evenly",
             }}
           >
-            { filteredData.length === 0 ?  (
+            {filteredData.length === 0 ? (
               <div>
                 <img
                   style={{ width: 90, marginLeft: 90 }}
