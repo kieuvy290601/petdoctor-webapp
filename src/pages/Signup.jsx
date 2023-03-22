@@ -43,11 +43,17 @@ const Signup = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            let role = "user";
+            if (email === "admin@gmail.com") {
+              // set admin role if email is admin email
+              role = "admin";
+            }
             await setDoc(doc(db, "users", user.uid), {
               uid: user.uid,
               displayName: username,
               email,
               photoURL: downloadURL,
+              role: role,
             });
           });
         }
@@ -58,7 +64,7 @@ const Signup = () => {
       navigate("/login");
     } catch (error) {
       //setLoading(false);
-      console.log("Something went wrong");
+      console.log(error);
     }
   };
 
@@ -110,7 +116,7 @@ const Signup = () => {
                 </button>
 
                 <p>
-                  Don't have an account? <Link to="/login"> Log In</Link>
+                  Don't have an account? <Link to="/login" style={{color: "blue"}}> Log In</Link>
                 </p>
               </Form>
             </Col>

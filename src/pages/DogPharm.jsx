@@ -3,7 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import ProductCard from "../components/UI/ProductCard";
 
 import "firebase/auth";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 import notfound from "../assets/images/nofound.png";
@@ -19,19 +19,26 @@ const DogPharm = () => {
   });
 
   useEffect(() => {
+    console.log("Trigger event");
+    console.log(selectedOption);
+    console.log(sortOption);
     const fetchData = async () => {
+      console.log("category: " + selectedOption);
+      console.log("sort option: " + sortOption.field + " " + sortOption.value);
       const q = query(
         collection(db, "products"),
         selectedOption === "all"
           ? null
-          : where("prdCategory", "==", selectedOption),
-        orderBy(sortOption.field, sortOption.value)
+          : where("prdCategory", "==", selectedOption)
+        // orderBy(sortOption.field, sortOption.value)
       );
 
+    
       const querySnapshot = await getDocs(q);
+      console.log("query" + JSON.stringify(querySnapshot));
 
       const data = querySnapshot.docs.map((doc) => doc.data());
-      console.log(data);
+      console.log("data" + data);
 
       setFilteredData(data);
     };
@@ -99,9 +106,9 @@ const DogPharm = () => {
                   </Col>
                   <Col lg="2" md="3">
                     <div className="filter">
-                      <select name="" id="" onClick={handleSortOptionChange}>
+                      <select name="" id="" onChange={handleSortOptionChange}>
                         <option value="">Sort By</option>
-                        <option value="price">Price</option>
+                        <option value="asc">Ascending</option>
                         <option value="desc">Descending</option>
                       </select>
                     </div>
