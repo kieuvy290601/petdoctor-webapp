@@ -1,0 +1,96 @@
+/* .payment label,
+.address label {
+  color: var(--primary-color);
+  padding-bottom: 12px;
+}
+
+.city-address {
+  padding: 8px 0px 8px;
+  display: grid;
+}
+
+.city-address select {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  margin-left: -2px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+.country {
+  padding: 10px 0px 25px;
+  display: grid;
+  border-bottom: 1px solid #ddd;
+}
+
+.country select {
+  padding: 10px 16px;
+  border: none;
+  margin-left: -2px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  color: #4e4e4e;
+}
+
+.col-md-6 .border {
+  margin: 0px
+}
+
+.col-xl-8 .checkout {
+  padding: 50px;
+}
+
+.col-md-6 input,
+.col-md-8 input,
+.col-md-12 input {
+  background-color: #f0f0f0;
+  height: 42px;
+  border-radius: 10px;
+
+}
+
+.col-md-6 {
+  margin-right: 30px;
+}
+
+.city select,
+.district select,
+.communes select,
+.postalcode input {
+  width: 300px;
+}
+
+.address p {
+  padding: 10px 0px 7px;
+}
+
+.d-flex .col-md-12 .border input {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 3px;
+}
+
+.border img {
+  width: 60px;
+  padding-left: 5px;
+  padding-bottom: 2px;
+}
+
+.border .detail {
+  width: 350px;
+  background-color:#f0f0f0; 
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  margin: 4px;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+input[type="checkbox"] {
+  margin-left: 10px;
+} */

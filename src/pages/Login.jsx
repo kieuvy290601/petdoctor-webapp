@@ -4,14 +4,19 @@ import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase.config";
+import { auth, db } from "../firebase.config";
 
+import { doc, getDoc } from "firebase/firestore";
 import heroImg from "../assets/images/loginImg.png";
+import { setUserRole } from "../redux/slices/authSlice";
 import "../styles/Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
   // const [loading, setLoading] = useState("false");
   const navigate = useNavigate();
 
@@ -29,8 +34,21 @@ const Login = () => {
       const user = userCredential.user;
 
       console.log(user);
-      //setLoading(false);
       console.log("Successfully logged in");
+
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userRole = userDoc.data().role;
+      if (userRole === "adin") {
+        // setIsAdmin(true);
+        setUserRole("admin");
+        console.log(userRole);
+      } else {
+        // setIsAdmin(false);
+        setUserRole("user");
+
+        console.log(userRole);
+      }
+
       navigate("/home");
     } catch (error) {
       // setLoading(false);
@@ -72,7 +90,11 @@ const Login = () => {
                 </button>
 
                 <p>
-                  Don't have an account? <Link to="/signup"> SignUp</Link>
+                  Don't have an account?{" "}
+                  <Link to="/signup" style={{ color: "blue" }}>
+                    {" "}
+                    Sign Up
+                  </Link>
                 </p>
               </Form>
             </Col>

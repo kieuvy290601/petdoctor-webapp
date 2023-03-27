@@ -1,3 +1,4 @@
+import { getAuth } from "firebase/auth";
 import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
@@ -35,6 +36,9 @@ const Header = () => {
   const headerRef = useRef(null);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
+  const auth = useSelector((state) => state.auth.userRole);
+  console.log(auth);
+
   const stickyHeader = () => {
     window.addEventListener("scroll", () => {
       if (
@@ -61,7 +65,7 @@ const Header = () => {
             {/* TODO: Logo web */}
             <div className="logo">
               <div>
-                <Link to="/home">
+                <Link to="/profile">
                   <img src={logo} alt="" />
                 </Link>
               </div>
@@ -73,7 +77,7 @@ const Header = () => {
             {/* TODO: Nav_links */}
             <div className="navigaion">
               <ul className="menu">
-                {nav_links.map((item, index) => (
+                {                  nav_links.map((item, index) => (
                   <li className="nav_item" key={index}>
                     <NavLink
                       to={item.path}

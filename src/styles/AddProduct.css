@@ -6,7 +6,7 @@
 }
 
 .btn_add {
-  background: var(--primary-color);
+  background: #198754;
   color: #fff;
 }
 .btn_cancel {
@@ -16,11 +16,26 @@
 }
 .btn_cancel,
 .btn_add {
-  border-radius: 30px;
-  width: 150px;
+  border-radius: 23px;
+  width: 120px;
   height: 50px;
   border: none;
 }
+
+.col-md-6 input[type="text"],
+.col-md-6 input[type="email"],
+.col-md-6 input[type="password"] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 12px 0;
+  display: inline-block;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  border-radius: 15px;
+  border: 0;
+}
+
 
 h3 {
   font-weight: 600;
