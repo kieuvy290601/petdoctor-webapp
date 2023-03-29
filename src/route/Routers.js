@@ -10,6 +10,7 @@ import Splash from "../pages/Splash";
 import ProtectedRoute from "./ProtectedRoute";
 import Cart from "../pages/Cart";
 import Test from "../pages/Test";
+import ProductDetail from "../pages/ProductDetail";
 
 const Routers = () => {
   return (
@@ -20,6 +21,7 @@ const Routers = () => {
       <Route path="login" element={<Login />} />
       <Route path="home" element={<Home />} />
       <Route path="test" element={<Test />} />
+      <Route path="productdetail/:prdId" element={<ProductDetail />} />
       <Route
         path="profile"
         element={

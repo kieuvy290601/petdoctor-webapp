@@ -2,6 +2,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Form } from "reactstrap";
 import { db, storage } from "../firebase.config";
 
@@ -15,11 +16,12 @@ const AddProduct = () => {
   const [quantity, setProductQuantity] = useState(0);
   const [description, setProducDescription] = useState("");
   const [file, setFile] = useState("");
-  const [isValid, setIsValid] = useState(true);
 
   const navigate = useNavigate();
 
-  const validateForm = () => {
+  const createData = async (e) => {
+    e.preventDefault();
+
     if (
       !name ||
       !pet ||
@@ -27,50 +29,40 @@ const AddProduct = () => {
       !category ||
       !quantity ||
       !description ||
-      !file
+      !file 
     ) {
-      setIsValid(false);
-      alert("Please fill out all required fields");
-    } else {
-      setIsValid(true);
+      toast.error("Please fill in all required fields");
+      return;
     }
-  };
 
-  const createData = async (e) => {
-    e.preventDefault();
-    validateForm();
 
-  if (isValid) {
-      const storageRef = ref(storage, `productImg/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+    const storageRef = ref(storage, `productImg/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-      uploadTask.on(
-        (error) => {
-          console.log("Something went wrong");
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await addDoc(collection(db, "products"), {
-              prdName: name,
-              prdPet: pet,
-              prdPrice: price,
-              prdCategory: category,
-              prdQuantity: quantity,
-              prdDesc: description,
-              prdURL: downloadURL,
-            });
+    uploadTask.on(
+    
+
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        // once the file is uploaded, get the download URL and add the product data to Firestore
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+          const dataRef = await addDoc(collection(db, "products"), {
+            prdName: name,
+            prdPet: pet,
+            prdPrice: price,
+            prdCategory: category,
+            prdQuantity: quantity,
+            prdDesc: description,
+            prdURL: downloadURL,
           });
-        }
-      );
-
-      console.log("Added product successfully");
-      navigate("/dogcare");
-    }
+          console.log("Added product successfully with ID: ", dataRef.id);
+          navigate("/dogcare");
+        });
+      }
+    );
   };
-    // } catch (error) {
-    //   console.log("Something went wrong");
-    // }
-  
 
   return (
     <section style={{ background: "#a5c0d8" }}>
@@ -106,12 +98,12 @@ const AddProduct = () => {
             <div className="col-md-6">
               <label>Available Quantity</label>
               <input
+                required
                 type="text"
                 className="border"
                 placeholder="Example: 350"
                 value={quantity}
                 onChange={(e) => setProductQuantity(Number(e.target.value))}
-                required
               />
             </div>
           </div>
@@ -120,10 +112,10 @@ const AddProduct = () => {
               <label className="mb-2">Choose Pet</label>
 
               <select
+                required
                 className="form-select"
                 value={pet}
                 onChange={(e) => setPet(e.target.value)}
-                required
               >
                 <option>Choose pet</option>
                 <option value="Dog">Dog</option>
@@ -134,10 +126,10 @@ const AddProduct = () => {
               <label className="mb-2">Category</label>
 
               <select
+                required
                 className="form-select"
                 value={category}
                 onChange={(e) => setProductCategory(e.target.value)}
-                required
               >
                 <option>Choose category</option>
                 <option value="Vaccine">Vaccine</option>
@@ -152,7 +144,7 @@ const AddProduct = () => {
             <input
               type="file"
               className="form-control"
-              style={{width: 566}}
+              style={{ width: 566 }}
               onChange={(e) => setFile(e.target.files[0])}
               required
             />

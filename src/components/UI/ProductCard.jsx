@@ -6,22 +6,21 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../../redux/slices/cartSlice";
 
-
-
-
 import "../../styles/Product-card.css";
 
-const ProductCard = ({ item, searchInput, }) => {
-  
-  const dispatch = useDispatch(); 
+const ProductCard = ({ item, searchInput, id }) => {
+
+  const dispatch = useDispatch();
+
+  // const id = documentId();
 
   const { prdName } = item;
   const isMatch = prdName.toLowerCase().includes(searchInput.toLowerCase());
-
+  
   const addtoCart = () => {
     dispatch(
       cartActions.addItemtoCart({
-        prdId: item.id,
+        prdId: item.prdId,
         prdName: item.prdName,
         prdPrice: item.prdPrice,
         prdURL: item.prdURL,
@@ -30,7 +29,6 @@ const ProductCard = ({ item, searchInput, }) => {
     toast.success("Added to cart successfully");
   };
 
-  
   if (!searchInput || isMatch) {
     return (
       // <Col lg="3" md="4">
@@ -40,7 +38,14 @@ const ProductCard = ({ item, searchInput, }) => {
         </div>
         <div className="p-2 product-info">
           <h3 className="product_name">
-            <Link to={`/dogcare/${item.id}`}>{item.prdName}</Link>
+            {/* <Link to={
+              `/productdetail/${item.prdId}`
+            
+            
+            }>{item.prdName}</Link>{" "} */}
+            <Link to={`/productdetail/${item.prdId}`} state={{ item }}>
+              {item.prdName}
+            </Link>
           </h3>
           <span>{item.prdCategory}</span>
         </div>
@@ -57,7 +62,6 @@ const ProductCard = ({ item, searchInput, }) => {
       // </Col>
     );
   } else {
-    
   }
 };
 

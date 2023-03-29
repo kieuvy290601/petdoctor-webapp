@@ -1,0 +1,88 @@
+.product_details{
+  margin-top: 50px;
+  padding-left: 60px;
+}
+
+.product_details h2,
+.product_details p,
+.product_details span {
+  color: var(--primary-color);
+}
+
+.product_details h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: bolder;
+}
+
+.product_details p {
+  font-weight: bold;
+}
+
+.product_details span {
+  font-weight: normal;
+}
+
+.prd_price {
+  font-size: 31px !important;
+  font-weight: bold !important;
+}
+
+.product_details p,
+.product_details span {
+  font-size: 18px;
+}
+
+.rating span i {
+  color: #ffa531;
+}
+
+.rating {
+  display: flex;
+}
+
+.rating p{
+  padding-left: 12px;
+  font-style :normal;
+  font-weight: 200;
+}
+
+.product_details .desc {
+  padding: 5px 0px;
+}
+
+.buy_btn {
+  color: #fff;
+  background-color: var(--primary-color);
+  padding: 8px 22px;
+  border-radius: 10px ;
+  margin-top: 10px;
+  border: none;
+}
+
+.tab_wrapper {
+  color: var(--primary-color);
+  font-weight: 500px;
+  font-style: 1rem;
+  cursor: pointer;
+}
+
+.active_tab {
+  font-weight: bold !important;
+  font-size: large;
+  background: #e9ecef ;
+  padding: 12px 20px;
+  border-radius: 7px 7px 0 0;
+  border-bottom: 4px solid var(--primary-color);
+}
+
+.tab_content {
+  /* border: 1px solid #000;  */
+  height: 120px;
+  padding: 25px;
+  background-color: #e9ecef;
+  margin-left: 12px;
+  border-radius: 10px;
+  line-height: 33px;
+}
+

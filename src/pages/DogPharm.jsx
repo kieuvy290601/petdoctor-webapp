@@ -10,6 +10,7 @@ import notfound from "../assets/images/nofound.png";
 import "../styles/Medi-care.css";
 
 const DogPharm = () => {
+  const [listPrd, setListPrd] = useState(null);
   const [selectedOption, setSelectedOption] = useState("all");
   const [filteredData, setFilteredData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -19,27 +20,22 @@ const DogPharm = () => {
   });
 
   useEffect(() => {
-    console.log("Trigger event");
-    console.log(selectedOption);
-    console.log(sortOption);
+  
     const fetchData = async () => {
-      console.log("category: " + selectedOption);
-      console.log("sort option: " + sortOption.field + " " + sortOption.value);
+      const prdList = collection(db, "products")
       const q = query(
-        collection(db, "products"),
+        prdList,
         selectedOption === "all"
           ? null
           : where("prdCategory", "==", selectedOption)
         // orderBy(sortOption.field, sortOption.value)
       );
 
-    
       const querySnapshot = await getDocs(q);
-      console.log("query" + JSON.stringify(querySnapshot));
+      
+      const data = querySnapshot.docs.map((doc) => ({ prdId: doc.id, ...doc.data() }));
 
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      console.log("data" + data);
-
+      // setListPrd(listPrd)
       setFilteredData(data);
     };
 
@@ -140,6 +136,8 @@ const DogPharm = () => {
                   key={item.id}
                   item={item}
                   searchInput={searchInput}
+                  prdId={item.prdId}
+                  
                 />
               ))
             )}
