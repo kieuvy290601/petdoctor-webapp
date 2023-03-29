@@ -1,5 +1,5 @@
-.product_details{
-  margin-top: 50px;
+.product_details {
+  margin-top: 63px;
   padding-left: 60px;
 }
 
@@ -41,9 +41,9 @@
   display: flex;
 }
 
-.rating p{
+.rating p {
   padding-left: 12px;
-  font-style :normal;
+  font-style: normal;
   font-weight: 200;
 }
 
@@ -55,7 +55,7 @@
   color: #fff;
   background-color: var(--primary-color);
   padding: 8px 22px;
-  border-radius: 10px ;
+  border-radius: 10px;
   margin-top: 10px;
   border: none;
 }
@@ -70,7 +70,7 @@
 .active_tab {
   font-weight: bold !important;
   font-size: large;
-  background: #e9ecef ;
+  background: #e9ecef;
   padding: 12px 20px;
   border-radius: 7px 7px 0 0;
   border-bottom: 4px solid var(--primary-color);
@@ -86,3 +86,6 @@
   line-height: 33px;
 }
 
+.review  {
+  font-weight: bold;
+}

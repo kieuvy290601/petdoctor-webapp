@@ -35,17 +35,17 @@ const ProductDetail = () => {
 
   return (
     <Helmet title={item.prdName}>
-      <section className="pt-0">
+      <section className="pt-0" style={{ margin: "0px 90px" }}>
         <Container>
           <Row>
-            <div className="col-lg-5">
+            <div className="col-lg-5 mt-5" style={{ background: "#dbe5ef" }}>
               <img
                 src={item.prdURL}
                 alt=""
-                style={{ width: "85%", marginLeft: 50 }}
+                style={{ width: "85%", marginLeft: 30 }}
               />
             </div>
-            <div className="col-lg-6">
+            <div className="col-lg-7">
               <div className="product_details">
                 <h2>{item.prdName}</h2>
                 <div className="rating">
@@ -80,7 +80,10 @@ const ProductDetail = () => {
                 >
                   <p className="desc">Quantity:&nbsp;</p>
 
-                  <div className="col mx-4 " style={{border: "1px solid", paddingLeft: 4}}>
+                  <div
+                    className="col mx-4 "
+                    style={{ border: "1px solid", paddingLeft: 4 }}
+                  >
                     <a href="#">-</a>
                     <a href="#" className="quantity">
                       1
@@ -122,12 +125,6 @@ const ProductDetail = () => {
               >
                 Direction
               </h6>
-              <h6
-                className={`${tab === "rev" ? "active_tab" : ""}`}
-                onClick={() => setTab("rev")}
-              >
-                Review
-              </h6>
             </div>
             {tab === "overview" ? (
               <div className="tab_content">
@@ -138,6 +135,18 @@ const ProductDetail = () => {
                 <p>{item.prdName}</p>
               </div>
             )}
+          </Row>
+        </Container>
+      </section>
+      <section className="pt-2">
+        <Container>
+          <Row>
+            <div className="col-lg-12">
+              <h4 className="review">Product Reviews</h4>
+            </div>
+            <div>
+              
+            </div>
           </Row>
         </Container>
       </section>

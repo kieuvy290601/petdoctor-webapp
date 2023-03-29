@@ -25,8 +25,9 @@ const DogPharm = () => {
       const prdList = collection(db, "products")
       const q = query(
         prdList,
+        where("prdPet", "==", "Dog"),
         selectedOption === "all"
-          ? null
+          ? where("prdPet", "==", "Dog")
           : where("prdCategory", "==", selectedOption)
         // orderBy(sortOption.field, sortOption.value)
       );
