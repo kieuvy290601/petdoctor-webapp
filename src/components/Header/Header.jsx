@@ -18,12 +18,12 @@ const nav_links = [
     display: "Services",
   },
   {
-    path: "dogcare",
-    display: "Dog-Pharmacy",
+    path: "dogshop",
+    display: "Dog",
   },
   {
-    path: "catcare",
-    display: "Cat-Pharmacy",
+    path: "catshop",
+    display: "Cat",
   },
   {
     path: "cart",

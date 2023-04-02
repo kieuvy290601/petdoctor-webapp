@@ -1,7 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 
 import AddProduct from "../pages/AddProduct";
-import DogPharm from "../pages/DogPharm";
+import DogShop from "../pages/DogShop";
+import CatShop from "../pages/CatShop";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
@@ -30,7 +31,8 @@ const Routers = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="dogcare" element={<DogPharm />} />
+      <Route path="dogshop" element={<DogShop />} />
+      <Route path="catshop" element={<CatShop />} />
       <Route path="cart" element={<Cart />} />
 
       <Route path="addproduct" element={<AddProduct />} />

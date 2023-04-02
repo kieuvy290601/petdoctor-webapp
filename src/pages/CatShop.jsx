@@ -25,9 +25,9 @@ const DogPharm = () => {
       const prdList = collection(db, "products");
       const q = query(
         prdList,
-        where("prdPet", "==", "Dog"),
+        where("prdPet", "==", "Cat"),
         selectedOption === "all"
-          ? where("prdPet", "==", "Dog")
+          ? where("prdPet", "==", "Cat")
           : where("prdCategory", "==", selectedOption)
         // orderBy(sortOption.field, sortOption.value)
       );
@@ -78,7 +78,7 @@ const DogPharm = () => {
     <section className="all_products">
       <Container>
         <Row>
-          <div class="img"></div>
+          <div className="banner2"></div>
           <div className=" d-flex align-items-baseline mb-4">
             <section className="filter-box">
               <Container>

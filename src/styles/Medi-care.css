@@ -1,9 +1,17 @@
-.img {
-  background-image: url("../assets/images/banner1.png");
+.banner1,
+.banner2 {
   background-size: cover;
   height: 300px;
   width: 100%;
   margin-bottom: 30px;
+}
+
+.banner1 {
+  background-image: url("../assets/images/banner1.png");
+}
+
+.banner2{
+  background-image: url("../assets/images/banner2.png");
 }
 
 .shop_title {
@@ -49,7 +57,6 @@
   outline: none;
   padding: 8px 15px 10px 15px;
   height: 10px;
-  
 }
 
 .search_box span {
@@ -62,18 +69,16 @@
   padding: 25px;
 }
 
-
-
 .search_box {
   background: #dee7eb;
   padding-right: 50px;
 }
 
 .pagination {
-  margin: 45px 10px ;
+  margin: 45px 10px;
 }
 
-.pagination span  {
+.pagination span {
   display: inline-block;
   width: 40px;
   height: 40px;
