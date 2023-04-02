@@ -10,7 +10,6 @@ import notfound from "../assets/images/nofound.png";
 import "../styles/Medi-care.css";
 
 const DogPharm = () => {
-  const [listPrd, setListPrd] = useState(null);
   const [selectedOption, setSelectedOption] = useState("all");
   const [filteredData, setFilteredData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -18,6 +17,9 @@ const DogPharm = () => {
     field: "prdName",
     value: "desc",
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+
 
   useEffect(() => {
   
@@ -29,20 +31,29 @@ const DogPharm = () => {
         selectedOption === "all"
           ? where("prdPet", "==", "Dog")
           : where("prdCategory", "==", selectedOption),
-        limit(8)
         // orderBy(sortOption.field, sortOption.value)
       );
 
       const querySnapshot = await getDocs(q);
+      const totalCount = querySnapshot.size;
       
       const data = querySnapshot.docs.map((doc) => ({ prdId: doc.id, ...doc.data() }));
 
       // setListPrd(listPrd)
+      setTotalProducts(totalCount);
       setFilteredData(data);
     };
 
     fetchData();
   }, [selectedOption, sortOption]);
+
+  const productsPerPage = 8;
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredData.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -123,7 +134,7 @@ const DogPharm = () => {
               justifyContent: "space-evenly",
             }}
           >
-            {filteredData.length === 0 ? (
+            {currentProducts.length === 0 ? (
               <div>
                 <img
                   style={{ width: 90, marginLeft: 90 }}
@@ -133,16 +144,30 @@ const DogPharm = () => {
                 <h4>No products are found!</h4>
               </div>
             ) : (
-              filteredData.map((item) => (
+              currentProducts.map((item) => (
                 <ProductCard
                   key={item.id}
                   item={item}
                   searchInput={searchInput}
                   prdId={item.prdId}
-                  
                 />
               ))
             )}
+          </div>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span style={{ margin: "0 10px" }}>Page {currentPage}</span>
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={indexOfLastProduct >= totalProducts}
+            >
+              Next
+            </button>
           </div>
         </Row>
       </Container>

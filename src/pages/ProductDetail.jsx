@@ -9,15 +9,14 @@ import {
 } from "firebase/firestore";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Container, Row } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import { db } from "../firebase.config";
-import "../styles/ProductDetail.css";
-import { useDispatch } from "react-redux";
 import { cartActions } from "../redux/slices/cartSlice";
-import { toast } from "react-toastify";
-
+import "../styles/ProductDetail.css";
 
 const ProductDetail = () => {
   const [tab, setTab] = useState("overview");
@@ -25,8 +24,7 @@ const ProductDetail = () => {
   const [item, setItem] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-      const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -46,7 +44,6 @@ const ProductDetail = () => {
         const querySnapshot = await getDocs(q);
         const relatedProducts = [];
         querySnapshot.forEach((doc) => {
-          // relatedProducts.push(doc.data());
           relatedProducts.push({ prdId: doc.id, ...doc.data() });
         });
         setRelatedProducts(relatedProducts);
@@ -63,7 +60,6 @@ const ProductDetail = () => {
     return <div>Loading...</div>;
   }
 
-
   const addtoCart = () => {
     dispatch(
       cartActions.addItemtoCart({
@@ -75,7 +71,6 @@ const ProductDetail = () => {
     );
     toast.success("Added to cart successfully");
   };
-
 
   return (
     <Helmet title={item.prdName}>
