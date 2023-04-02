@@ -3,7 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import ProductCard from "../components/UI/ProductCard";
 
 import "firebase/auth";
-import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 import notfound from "../assets/images/nofound.png";
@@ -20,24 +20,25 @@ const DogPharm = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
-
   useEffect(() => {
-  
     const fetchData = async () => {
-      const prdList = collection(db, "products")
+      const prdList = collection(db, "products");
       const q = query(
         prdList,
         where("prdPet", "==", "Dog"),
         selectedOption === "all"
           ? where("prdPet", "==", "Dog")
-          : where("prdCategory", "==", selectedOption),
+          : where("prdCategory", "==", selectedOption)
         // orderBy(sortOption.field, sortOption.value)
       );
 
       const querySnapshot = await getDocs(q);
       const totalCount = querySnapshot.size;
-      
-      const data = querySnapshot.docs.map((doc) => ({ prdId: doc.id, ...doc.data() }));
+
+      const data = querySnapshot.docs.map((doc) => ({
+        prdId: doc.id,
+        ...doc.data(),
+      }));
 
       // setListPrd(listPrd)
       setTotalProducts(totalCount);
@@ -154,19 +155,30 @@ const DogPharm = () => {
               ))
             )}
           </div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div
+            className="pagination"
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <button
-              onClick={() => setCurrentPage(currentPage - 1)}
+              onClick={() => {
+                setCurrentPage(currentPage - 1);
+                window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top
+              }}
               disabled={currentPage === 1}
             >
-              Previous
+              <i className="ri-arrow-left-s-line"></i>
             </button>
-            <span style={{ margin: "0 10px" }}>Page {currentPage}</span>
+            <span className="page" style={{ margin: "0px 12px" }}>
+              {currentPage}
+            </span>
             <button
-              onClick={() => setCurrentPage(currentPage + 1)}
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top
+                setCurrentPage(currentPage + 1);
+              }}
               disabled={indexOfLastProduct >= totalProducts}
             >
-              Next
+              <i className="ri-arrow-right-s-line"></i>
             </button>
           </div>
         </Row>

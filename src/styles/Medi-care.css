@@ -68,3 +68,30 @@
   background: #dee7eb;
   padding-right: 50px;
 }
+
+.pagination {
+  margin: 45px 10px ;
+}
+
+.pagination span  {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+}
+
+.pagination button {
+  border-radius: 50%;
+  background-color: #ededed;
+  border: none;
+  width: 40px;
+  height: 40px;
+}
+
+.pagination .page {
+  background-color: #36969b;
+  color: #fff;
+}
