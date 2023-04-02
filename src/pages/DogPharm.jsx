@@ -3,7 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import ProductCard from "../components/UI/ProductCard";
 
 import "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 import notfound from "../assets/images/nofound.png";
@@ -28,7 +28,8 @@ const DogPharm = () => {
         where("prdPet", "==", "Dog"),
         selectedOption === "all"
           ? where("prdPet", "==", "Dog")
-          : where("prdCategory", "==", selectedOption)
+          : where("prdCategory", "==", selectedOption),
+        limit(8)
         // orderBy(sortOption.field, sortOption.value)
       );
 
@@ -66,7 +67,7 @@ const DogPharm = () => {
       <Container>
         <Row>
           <div class="img"></div>
-          <div className=" d-flex align-items-baseline">
+          <div className=" d-flex align-items-baseline mb-4">
             <section className="filter-box">
               <Container>
                 <Row>

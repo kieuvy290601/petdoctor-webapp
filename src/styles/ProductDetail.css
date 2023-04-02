@@ -77,7 +77,6 @@
 }
 
 .tab_content {
-  /* border: 1px solid #000;  */
   height: 120px;
   padding: 25px;
   background-color: #e9ecef;
@@ -86,6 +85,139 @@
   line-height: 33px;
 }
 
-.review  {
+.review {
   font-weight: bold;
 }
+
+/* .card {
+  border-radius: 5px;
+  background-color: #fff;
+  padding-left: 60px;
+  padding-right: 60px;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+} */
+
+.rating-box {
+  margin-left: 33px;
+}
+
+.rating-box .pt-4 {
+  font-size: 60px;
+  color: #ffa531;
+}
+
+.col-md-3 .star {
+  color: #ffa531;
+  margin-left: 13px;
+}
+
+.col-md-3 p {
+  color: #ffa531;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.rating-label {
+  font-weight: bold;
+  color: #ffa531;
+  padding: 0px 20px 0px 45px;
+}
+
+.rating-bar {
+  width: 580px;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+
+.bar-container {
+  width: 100%;
+  background-color: #dbdbdb;
+  text-align: center;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+
+.bar-5 {
+  width: 70%;
+  height: 13px;
+  background-color: #ffa531;
+  border-radius: 20px;
+}
+.bar-4 {
+  width: 30%;
+  height: 13px;
+  background-color: #ffa531;
+  border-radius: 20px;
+}
+.bar-3 {
+  width: 20%;
+  height: 13px;
+  background-color: #ffa531;
+  border-radius: 20px;
+}
+.bar-2 {
+  width: 10%;
+  height: 13px;
+  background-color: #ffa531;
+  border-radius: 20px;
+}
+.bar-1 {
+  width: 2%;
+  height: 13px;
+  background-color: #ffa531;
+  border-radius: 20px;
+}
+
+.related {
+  font-weight: bold;
+}
+/* 
+.product_img {
+  height: 290px;
+  border-bottom: 1px solid #c5c5c5;
+}
+
+.product_item {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+.product-info {
+  flex-basis: 26%;
+}
+.product-info h3 a {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.product-info a:hover {
+  color: inherit;
+}
+
+.product-info span {
+  font-style: 0.9rem;
+}
+
+.product_card-bottom .price {
+  color: var(--primary-color);
+  font-style: 1.3rem;
+  font-weight: 600;
+}
+
+.product_card-bottom span i {
+  font-style: 1.2rem;
+  padding: 5px;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 50px;
+} */
