@@ -100,3 +100,14 @@
   background-color: #36969b;
   color: #fff;
 }
+
+
+.sort button {
+  border-radius: 50%;
+  border: none;
+  background-color: #36969b;
+  color: #fff;
+  height: 40px;
+  width: 40px;
+  margin: 0px 5px;
+}

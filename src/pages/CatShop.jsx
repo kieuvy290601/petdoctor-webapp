@@ -3,7 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import ProductCard from "../components/UI/ProductCard";
 
 import "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 import notfound from "../assets/images/nofound.png";
@@ -13,24 +13,26 @@ const DogPharm = () => {
   const [selectedOption, setSelectedOption] = useState("all");
   const [filteredData, setFilteredData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [sortOption, setSortOption] = useState({
-    field: "prdName",
-    value: "desc",
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     const fetchData = async () => {
       const prdList = collection(db, "products");
-      const q = query(
-        prdList,
-        where("prdPet", "==", "Cat"),
-        selectedOption === "all"
-          ? where("prdPet", "==", "Cat")
-          : where("prdCategory", "==", selectedOption)
-        // orderBy(sortOption.field, sortOption.value)
-      );
+      // 
+      
+    let q = query(prdList, where("prdPet", "==", "Cat"));
+
+    if (selectedOption !== "all") {
+      q = query(q, where("prdCategory", "==", selectedOption));
+    }
+
+    if (sortOrder === "asc") {
+      q = query(q, orderBy("prdPrice"));
+    } else {
+      q = query(q, orderBy("prdPrice", "desc"));
+    }
 
       const querySnapshot = await getDocs(q);
       const totalCount = querySnapshot.size;
@@ -46,7 +48,7 @@ const DogPharm = () => {
     };
 
     fetchData();
-  }, [selectedOption, sortOption]);
+  }, [selectedOption, sortOrder]);
 
   const productsPerPage = 8;
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -60,18 +62,9 @@ const DogPharm = () => {
     setSelectedOption(event.target.value);
   };
 
-  const handleSortOptionChange = (event) => {
-    var orderByOption = event.target.value;
-    console.log("sort option changed: " + orderByOption);
-
-    if (orderByOption === "") {
-      setSortOption({ field: "prdName", value: "asc" });
-    } else {
-      setSortOption({
-        field: "prdPrice",
-        value: sortOption.value === "asc" ? "desc" : "asc",
-      });
-    }
+  const handleSortOrderChange = () => {
+    // Step 2
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
   return (
@@ -114,14 +107,13 @@ const DogPharm = () => {
                       </select>
                     </div>
                   </Col>
-                  <Col lg="2" md="3">
-                    <div className="filter">
-                      <select name="" id="" onChange={handleSortOptionChange}>
-                        <option value="">Sort By</option>
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                      </select>
-                    </div>
+                  <Col className="sort" lg="2" md="3">
+                    <button value="asc" onClick={handleSortOrderChange}>
+                      <i class="ri-sort-asc"></i>
+                    </button>
+                    <button value="desc" onClick={handleSortOrderChange}>
+                      <i class="ri-sort-desc"></i>
+                    </button>
                   </Col>
                 </Row>
               </Container>
