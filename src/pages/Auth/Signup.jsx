@@ -2,28 +2,68 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../../components/Helmet/Helmet";
+import Loading from "../../components/Loading/Loading";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { auth } from "../../firebase.config";
 import { db, storage } from "../../firebase.config.js";
 
+import { toast } from "react-toastify";
 import heroImg from "../.././assets/images/loginImg.png";
-import "../../styles/Signup.css"
+import "../../styles/Signup.css";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [file, setFile] = useState(null);
-  //const [setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const signup = async (e) => {
     e.preventDefault();
-    //setLoading(false);
+    setLoading(true);
+
+    const isValidEmail = (email) => {
+      const emailRegex = /\S+@\S+\.\S+/;
+      return emailRegex.test(email);
+    };
+
+
+    // Check if the email is valid
+    if (!isValidEmail(email)) {
+      toast.error("Invalid email address");
+      setLoading(false);
+      return;
+    }
+
+    // Check if the email already exists
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", email));
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.size > 0) {
+      toast.error("Email already exists");
+      setLoading(false);
+      return;
+    }
+
+    // Check if the password not have equal or moren than 6 characters
+    if (password.length < 6) {
+      toast.error("Password should be at least 6 characters long.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -31,6 +71,7 @@ const Signup = () => {
         email,
         password
       );
+      setLoading(false);
 
       const user = userCredential.user;
 
@@ -50,7 +91,7 @@ const Signup = () => {
             }
             await setDoc(doc(db, "users", user.uid), {
               uid: user.uid,
-              displayName: username,
+              username: username,
               email,
               photoURL: downloadURL,
               role: role,
@@ -61,15 +102,18 @@ const Signup = () => {
 
       //setLoading(true);
       console.log("Account created");
+      toast.success("Account created");
       navigate("/login");
     } catch (error) {
       //setLoading(false);
       console.log(error);
+      setLoading(false);
     }
   };
 
   return (
     <Helmet title={"Signup"}>
+      {isLoading && <Loading />}
       <section className="hero_section">
         <Container>
           <Row>
@@ -89,6 +133,7 @@ const Signup = () => {
                   style={{ marginTop: 18 }}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  required
                 />
 
                 <input
@@ -96,6 +141,7 @@ const Signup = () => {
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
 
                 <input
@@ -103,6 +149,7 @@ const Signup = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
 
                 <input

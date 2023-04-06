@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../../components/Helmet/Helmet";
@@ -9,19 +9,24 @@ import { auth, db } from "../../firebase.config";
 import { doc, getDoc } from "firebase/firestore";
 import heroImg from "../.././assets/images/loginImg.png";
 import "../../styles/Login.css";
+import { toast } from "react-toastify";
+import Loading from "../../components/Loading/Loading";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setLoading] = useState("false");
+  
 
   const [isAdmin, setIsAdmin] = useState(false);
-
-  // const [loading, setLoading] = useState("false");
   const navigate = useNavigate();
+
+ 
+  
 
   const login = async (e) => {
     e.preventDefault();
-    //setLoading(false);
+    setLoading(true);
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -29,6 +34,7 @@ const Login = () => {
         email,
         password
       );
+      setLoading(false);
 
       const user = userCredential.user;
 
@@ -48,16 +54,25 @@ const Login = () => {
 
       //   console.log(userRole);
       // }
-
+      toast.success("Login Success")
       navigate("/home");
     } catch (error) {
-      // setLoading(false);
       console.error(error.message);
+      setLoading(false);
+      // Display an error message to the user if the email or password is incorrect
+      if (error.code === "auth/user-not-found") {
+        toast.error("User not found");
+      }
+      else if (error.code === "auth/wrong-password") { 
+        toast.error("Password is incorrect");
+
+      }
     }
   };
 
   return (
     <Helmet title={"Signup"}>
+      {isLoading === true && email && password && <Loading />}{" "}
       <section className="hero_section">
         <Container>
           <Row>

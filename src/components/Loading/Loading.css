@@ -2,7 +2,7 @@
   position: fixed;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(235, 235, 235, 0.534);
   z-index: 9;
 }
 
@@ -12,4 +12,5 @@
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 999;
+  width: 10%;
 }
