@@ -28,7 +28,8 @@ button:hover {
   opacity: 1;
 }
 
-.button_login {
+.button_login,
+.gg_login {
   float: left;
   width: 100%;
   border-radius: 15px;
@@ -37,4 +38,10 @@ button:hover {
   color: #f1f1f1;
   padding: 14px 20px;
   margin: 20px 0;
+}
+
+.gg_login{
+  background-color: #e6ad55 !important;
+  padding: 8px;
+  margin: 5px 0;
 }

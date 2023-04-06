@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
-import Helmet from "../components/Helmet/Helmet";
+import Helmet from "../../components/Helmet/Helmet";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { auth } from "../firebase.config";
-import { db, storage } from "../firebase.config.js";
+import { auth } from "../../firebase.config";
+import { db, storage } from "../../firebase.config.js";
 
-import heroImg from "../assets/images/loginImg.png";
-import "../styles/Signup.css";
+import heroImg from "../.././assets/images/loginImg.png";
+import "../../styles/Signup.css"
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -116,7 +116,11 @@ const Signup = () => {
                 </button>
 
                 <p>
-                  Don't have an account? <Link to="/login" style={{color: "blue"}}> Log In</Link>
+                  Don't have an account?{" "}
+                  <Link to="/login" style={{ color: "blue" }}>
+                    {" "}
+                    Log In
+                  </Link>
                 </p>
               </Form>
             </Col>

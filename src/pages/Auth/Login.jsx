@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
-import Helmet from "../components/Helmet/Helmet";
+import Helmet from "../../components/Helmet/Helmet";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase.config";
+import { auth, db } from "../../firebase.config";
 
 import { doc, getDoc } from "firebase/firestore";
-import heroImg from "../assets/images/loginImg.png";
-import { setUserRole } from "../redux/slices/authSlice";
-import "../styles/Login.css";
+import heroImg from "../.././assets/images/loginImg.png";
+import "../../styles/Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -69,7 +68,7 @@ const Login = () => {
             </Col>
             <Col lg="5" md="5">
               <Form onSubmit={login}>
-                <h1 style={{ marginTop: 50 }}>Log In</h1>
+                <h1 style={{ marginTop: 15 }}>Log In</h1>
 
                 <input
                   type="email"
@@ -77,17 +76,35 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   style={{ marginTop: 18 }}
+                  required
                 />
 
                 <input
                   type="password"
                   placeholder="Password"
                   value={password}
+                  required
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <Link to="/resetpassword" style={{ marginLeft: 310 }}>
+                  Forgot Password?
+                </Link>
 
                 <button type="submit" className="button_login">
                   Log In
+                </button>
+                <p className="text-center">Or</p>
+                <button type="submit" className="gg_login">
+                  <i
+                    class="ri-google-fill"
+                    style={{
+                      fontSize: "21px",
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                      marginRight: "0.5em",
+                    }}
+                  ></i>
+                  Log In with Google
                 </button>
 
                 <p>

@@ -1,17 +1,18 @@
 import { Route, Routes } from "react-router-dom";
 
 import AddProduct from "../pages/AddProduct";
-import DogShop from "../pages/DogShop";
+import Login from "../pages/Auth/Login";
+import Signup from "../pages/Auth/Signup";
+import Cart from "../pages/Cart";
 import CatShop from "../pages/CatShop";
+import Checkout from "../pages/Checkout";
+import DogShop from "../pages/DogShop";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
+import ProductDetail from "../pages/ProductDetail";
 import Profile from "../pages/Profile";
-import Signup from "../pages/Signup";
 import Splash from "../pages/Splash";
 import ProtectedRoute from "./ProtectedRoute";
-import Cart from "../pages/Cart";
-import Checkout from "../pages/Checkout";
-import ProductDetail from "../pages/ProductDetail";
+import ResetPassword from "../pages/Auth/ResetPassword";
 
 const Routers = () => {
   return (
@@ -20,6 +21,7 @@ const Routers = () => {
       <Route path="splash" element={<Splash />} />
       <Route path="signup" element={<Signup />} />
       <Route path="login" element={<Login />} />
+      <Route path="resetpassword" element={<ResetPassword />} />
       <Route path="home" element={<Home />} />
       <Route path="checkout" element={<Checkout />} />
       <Route path="productdetail/:prdId" element={<ProductDetail />} />
