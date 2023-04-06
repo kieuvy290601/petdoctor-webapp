@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../../components/Helmet/Helmet";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, db } from "../../firebase.config";
 
 import { doc, getDoc } from "firebase/firestore";
-import heroImg from "../.././assets/images/loginImg.png";
-import "../../styles/Login.css";
 import { toast } from "react-toastify";
+import heroImg from "../.././assets/images/loginImg.png";
 import Loading from "../../components/Loading/Loading";
+import "../../styles/Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -70,6 +70,22 @@ const Login = () => {
     }
   };
 
+  //Login with Google
+  const provider = new GoogleAuthProvider();
+  const logInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // The signed-in user info.
+        const user = result.user;
+        toast.success("Login successfully")
+        navigate("/home")
+      }).catch((error) => {
+        toast.error("Error while logging with Google")
+        
+      });
+      
+  }
+
   return (
     <Helmet title={"Signup"}>
       {isLoading === true && email && password && <Loading />}{" "}
@@ -109,7 +125,7 @@ const Login = () => {
                   Log In
                 </button>
                 <p className="text-center">Or</p>
-                <button type="submit" className="gg_login">
+                <button className="gg_login" onClick={logInWithGoogle}>
                   <i
                     class="ri-google-fill"
                     style={{
