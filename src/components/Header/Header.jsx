@@ -1,7 +1,9 @@
+import { getAuth, signOut } from "firebase/auth";
 import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Link, NavLink , useNavigate} from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Container, Row } from "reactstrap";
 
 import avatar from "../../assets/images/avatar.png";
@@ -32,13 +34,11 @@ const nav_links = [
 ];
 
 const Header = () => {
-
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = useSelector((state) => state.auth.user);
   const headerRef = useRef(null);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-
-  const auth = useSelector((state) => state.auth.userRole);
-  console.log(auth);
 
   const stickyHeader = () => {
     window.addEventListener("scroll", () => {
@@ -58,10 +58,22 @@ const Header = () => {
     return () => window.removeEventListener("scroll", stickyHeader);
   });
 
-  const navigateToCart = () => { 
-navigate("/cart");
-  }
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        toast.success("Logout successfully");
+        navigate("/login");
+      })
+      .catch((error) => {
+        // An error happened.
+        toast.error("Something went wrong");
+      });
+  };
 
+  const navigateToCart = () => {
+    navigate("/cart");
+  };
 
   return (
     <header className="header" ref={headerRef}>
@@ -100,7 +112,7 @@ navigate("/cart");
 
             {/* TODO: Nav_icons  */}
             <div className="nav_icons">
-              <span className="fav_icon">
+              <span className="fav_icon" onClick={handleLogout}>
                 <i class="ri-heart-3-line"></i>
                 <span className="badge">1</span>
               </span>
