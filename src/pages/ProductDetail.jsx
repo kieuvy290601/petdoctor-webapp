@@ -67,9 +67,11 @@ const ProductDetail = () => {
         prdName: item.prdName,
         prdPrice: item.prdPrice,
         prdURL: item.prdURL,
+        prdCategory: item.prdCategory,
       })
     );
     toast.success("Added to cart successfully");
+    
   };
 
   return (
@@ -140,7 +142,7 @@ const ProductDetail = () => {
                   </span>
                 </div>
 
-                <motion.button whileTap={{ scale: 1.1 }} className="buy_btn">
+                <motion.button whileTap={{ scale: 1.1 }} className="buy_btn" onClick={addtoCart}>
                   Add to cart
                 </motion.button>
               </div>

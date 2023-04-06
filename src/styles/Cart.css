@@ -12,6 +12,7 @@
 .card .card-header span {
   cursor: pointer;
   padding-right: 21px;
+  align-items: baseline;
 }
 
 .card .card-body .col span {
@@ -98,14 +99,15 @@
 .delivery .mb-2 {
   color: #5c778f;
   font-size: 15px;
+  line-height: 30px;
 }
 
 .deli {
   border: none;
-  margin-left: 160px;
   background-color: var(--primary-color);
   padding-left: 10px;
   font-size: 14px;
+  margin: 4px 0 8px;
 }
 
 .grand-total {
@@ -222,3 +224,5 @@ input[type="radio"] {
 input[type="checkbox"] {
   margin-left: 10px;
 }
+
+

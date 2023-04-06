@@ -24,6 +24,7 @@
           prdName: item.prdName,
           prdPrice: item.prdPrice,
           prdURL: item.prdURL,
+          prdCategory: item.prdCategory,
         })
       );
       toast.success("Added to cart successfully");

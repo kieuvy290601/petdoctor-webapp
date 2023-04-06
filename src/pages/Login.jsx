@@ -38,16 +38,17 @@ const Login = () => {
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const userRole = userDoc.data().role;
-      if (userRole === "adin") {
-        // setIsAdmin(true);
-        setUserRole("admin");
-        console.log(userRole);
-      } else {
-        // setIsAdmin(false);
-        setUserRole("user");
+      console.log(userRole);
+      // if (userRole === "admin") {
+      //   // setIsAdmin(true);
+      //   // setUserRole("admin");
+      //   console.log(userRole);
+      // } else {
+      //   // setIsAdmin(false);
+      //   // setUserRole("user");
 
-        console.log(userRole);
-      }
+      //   console.log(userRole);
+      // }
 
       navigate("/home");
     } catch (error) {
