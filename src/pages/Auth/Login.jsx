@@ -3,10 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../../components/Helmet/Helmet";
 
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth, db } from "../../firebase.config";
 
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import heroImg from "../.././assets/images/loginImg.png";
 import Loading from "../../components/Loading/Loading";
@@ -16,13 +20,9 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState("false");
-  
 
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-
- 
-  
 
   const login = async (e) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ const Login = () => {
 
       //   console.log(userRole);
       // }
-      toast.success("Login Success")
+      toast.success("Login Success");
       navigate("/home");
     } catch (error) {
       console.error(error.message);
@@ -62,10 +62,8 @@ const Login = () => {
       // Display an error message to the user if the email or password is incorrect
       if (error.code === "auth/user-not-found") {
         toast.error("User not found");
-      }
-      else if (error.code === "auth/wrong-password") { 
+      } else if (error.code === "auth/wrong-password") {
         toast.error("Password is incorrect");
-
       }
     }
   };
@@ -77,14 +75,26 @@ const Login = () => {
       .then((result) => {
         // The signed-in user info.
         const user = result.user;
-        toast.success("Login successfully")
-        navigate("/home")
-      }).catch((error) => {
-        toast.error("Error while logging with Google")
-        
+        // set the user role to "user"
+
+
+        const userRef = doc(db, "users", user.uid);
+        setDoc(userRef, { role: "user" }, { merge: true });
+
+        // db.collection("users").doc(user.uid).set(
+        //   {
+        //     role: "user",
+        //   },
+        //   { merge: true }
+        // );
+        toast.success("Login successfully");
+        navigate("/home");
+      })
+      .catch((error) => {
+        toast.error("Error while logging with Google");
+        console.log(error.message);
       });
-      
-  }
+  };
 
   return (
     <Helmet title={"Signup"}>

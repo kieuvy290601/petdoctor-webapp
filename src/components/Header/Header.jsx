@@ -1,13 +1,14 @@
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { motion } from "framer-motion";
-import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Container, Row } from "reactstrap";
 
 import avatar from "../../assets/images/avatar.png";
 import logo from "../../assets/images/logoww.png";
+import { setUserActive } from "../../redux/slices/authSlice";
 import "./Header.css";
 
 const nav_links = [
@@ -38,7 +39,9 @@ const Header = () => {
   const auth = getAuth();
   const user = useSelector((state) => state.auth.user);
   const headerRef = useRef(null);
-  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const dispatch = useDispatch();
+
+  const [displayName, setDisplayName] = useState("");
 
   const stickyHeader = () => {
     window.addEventListener("scroll", () => {
@@ -70,6 +73,34 @@ const Header = () => {
         toast.error("Something went wrong");
       });
   };
+
+  // Get currently logged in user
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user)
+        // const uid = user.uid;
+        console.log(user.displayName)
+        if (user.displayName === null) {
+          const u1 = user.email.substring(0,user.email.indexOf('@'));
+          const userName = u1.charAt(0).toUpperCase() + u1.slice(1)
+          setDisplayName(userName)
+        } else { 
+
+          setDisplayName(user.displayName)
+        }
+
+        dispatch(setUserActive({
+          email: user.email,
+          userName: user.displayName ? user.displayName : displayName,
+          userId: user.uid,
+          userURL: user.photoURL,
+        }))
+      } else {
+        setDisplayName("")
+      }
+    });
+  }, [])
 
   const navigateToCart = () => {
     navigate("/cart");
@@ -118,8 +149,11 @@ const Header = () => {
               </span>
               <span className="cart_icon" onClick={navigateToCart}>
                 <i class="ri-shopping-cart-line"></i>
-                <span className="badge">{totalQuantity}</span>
+                <span className="badge"></span>
               </span>
+              <a href="#">
+                Hi, {displayName}
+              </a>
               <span>
                 <motion.img whileTap={{ scale: 1.2 }} src={avatar} alt="" />
               </span>
