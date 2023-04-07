@@ -1,43 +1,21 @@
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Container, Row } from "reactstrap";
 
-import avatar from "../../assets/images/avatar.png";
 import logo from "../../assets/images/logoww.png";
-import { setUserActive } from "../../redux/slices/authSlice";
+import { removeUserActive, selectIsLoggedIn, setUserActive } from "../../redux/slices/authSlice";
+import AfterLoggedIn, { AfterLoggedOut } from "../HiddenNavBar/HiddenNav";
 import "./Header.css";
-
-const nav_links = [
-  {
-    path: "home",
-    display: "Home",
-  },
-  {
-    path: "services",
-    display: "Services",
-  },
-  {
-    path: "dogshop",
-    display: "Dog",
-  },
-  {
-    path: "catshop",
-    display: "Cat",
-  },
-  {
-    path: "cart",
-    display: "Cart",
-  },
-];
 
 const Header = () => {
   const navigate = useNavigate();
   const auth = getAuth();
   const user = useSelector((state) => state.auth.user);
+  // const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const headerRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -78,29 +56,31 @@ const Header = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user)
+        console.log(user);
         // const uid = user.uid;
-        console.log(user.displayName)
+        console.log(user.displayName);
         if (user.displayName === null) {
-          const u1 = user.email.substring(0,user.email.indexOf('@'));
-          const userName = u1.charAt(0).toUpperCase() + u1.slice(1)
-          setDisplayName(userName)
-        } else { 
-
-          setDisplayName(user.displayName)
+          const u1 = user.email.substring(0, user.email.indexOf("@"));
+          const userName = u1.charAt(0).toUpperCase() + u1.slice(1);
+          setDisplayName(userName);
+        } else {
+          setDisplayName(user.displayName);
         }
 
-        dispatch(setUserActive({
-          email: user.email,
-          userName: user.displayName ? user.displayName : displayName,
-          userId: user.uid,
-          userURL: user.photoURL,
-        }))
+        dispatch(
+          setUserActive({
+            email: user.email,
+            userName: user.displayName ? user.displayName : displayName,
+            userId: user.uid,
+            userURL: user.photoURL,
+          })
+        );
       } else {
-        setDisplayName("")
+        setDisplayName("");
+        dispatch(removeUserActive());
       }
     });
-  }, [])
+  }, []);
 
   const navigateToCart = () => {
     navigate("/cart");
@@ -125,7 +105,7 @@ const Header = () => {
 
             {/* TODO: Nav_links */}
             <div className="navigaion">
-              <ul className="menu">
+              {/* <ul className="menu">
                 {nav_links.map((item, index) => (
                   <li className="nav_item" key={index}>
                     <NavLink
@@ -138,31 +118,91 @@ const Header = () => {
                     </NavLink>
                   </li>
                 ))}
+              </ul> */}
+              <ul className="menu">
+                <NavLink
+                  to="/home"
+                  className={(navClass) =>
+                    navClass.isActive ? "nav_active" : ""
+                  }
+                >
+                  {" "}
+                  Home
+                </NavLink>
+
+                <NavLink
+                  className={(navClass) =>
+                    navClass.isActive ? "nav_active" : ""
+                  }
+                  to="/services"
+                >
+                  {" "}
+                  Services
+                </NavLink>
+                <NavLink
+                  className={(navClass) =>
+                    navClass.isActive ? "nav_active" : ""
+                  }
+                  to="/dogshop"
+                >
+                  {" "}
+                  Dog
+                </NavLink>
+                <NavLink
+                  className={(navClass) =>
+                    navClass.isActive ? "nav_active" : ""
+                  }
+                  to="/catshop"
+                >
+                  {" "}
+                  Cat
+                </NavLink>
+
+                <AfterLoggedIn>
+                  <NavLink
+                    className={(navClass) =>
+                      navClass.isActive ? "nav_active" : ""
+                    }
+                    to="/login"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </NavLink>
+                </AfterLoggedIn>
+                
               </ul>
             </div>
 
             {/* TODO: Nav_icons  */}
-            <div className="nav_icons">
-              <span className="fav_icon" onClick={handleLogout}>
-                <i class="ri-heart-3-line"></i>
-                <span className="badge">1</span>
-              </span>
-              <span className="cart_icon" onClick={navigateToCart}>
-                <i class="ri-shopping-cart-line"></i>
-                <span className="badge"></span>
-              </span>
-              <a href="#">
-                Hi, {displayName}
-              </a>
-              <span>
-                <motion.img whileTap={{ scale: 1.2 }} src={avatar} alt="" />
-              </span>
-              <div className="mobile_menu">
-                <span>
-                  <i class="ri-menu-line"></i>
+            <AfterLoggedIn>
+              <div className="nav_icons">
+                <span className="fav_icon" onClick={handleLogout}>
+                  <i class="ri-heart-3-line"></i>
+                  <span className="badge">1</span>
                 </span>
+                <span className="cart_icon" onClick={navigateToCart}>
+                  <i class="ri-shopping-cart-line"></i>
+                  <span className="badge"></span>
+                </span>
+                <a href="/profile">Hi, {displayName}</a>
+                <div className="mobile_menu">
+                  <span>
+                    <i class="ri-menu-line"></i>
+                  </span>
+                </div>
               </div>
-            </div>
+            </AfterLoggedIn>
+            <AfterLoggedOut>
+              <NavLink
+                className={(navClass) =>
+                  navClass.isActive ? "nav_active" : ""
+                }
+                to="/login"
+              >
+                {" "}
+                Login
+              </NavLink>
+            </AfterLoggedOut>
           </div>
         </Row>
       </Container>
