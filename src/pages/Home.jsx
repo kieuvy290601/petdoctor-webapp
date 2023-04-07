@@ -32,7 +32,7 @@ const Home = () => {
             </Col>
 
             <Col lg="7" md="8">
-              <div className="hero_img" style={{ width: 750 }}>
+              <div className="hero_img" style={{ width: 729 }}>
                 <img src={landImg} alt="" />
               </div>
             </Col>

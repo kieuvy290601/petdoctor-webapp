@@ -6,23 +6,24 @@ import { toast } from "react-toastify";
 import { Container, Row } from "reactstrap";
 
 import logo from "../../assets/images/logoww.png";
-import { removeUserActive, selectIsLoggedIn, setUserActive } from "../../redux/slices/authSlice";
+import { removeUserActive, setUserActive } from "../../redux/slices/authSlice";
 import AfterLoggedIn, { AfterLoggedOut } from "../HiddenNavBar/HiddenNav";
 import "./Header.css";
 
 const Header = () => {
+  const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const auth = getAuth();
-  const user = useSelector((state) => state.auth.user);
-  // const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const headerRef = useRef(null);
   const dispatch = useDispatch();
+  // const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
   const [displayName, setDisplayName] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
 
   const stickyHeader = () => {
     window.addEventListener("scroll", () => {
+      if (!headerRef.current) return;
       if (
         document.body.scrollTop > 80 ||
         document.documentElement.scrollTop > 80
@@ -34,10 +35,11 @@ const Header = () => {
     });
   };
 
+
   useEffect(() => {
-    stickyHeader();
-    return () => window.removeEventListener("scroll", stickyHeader);
-  });
+  stickyHeader();
+  return () => window.removeEventListener("scroll", stickyHeader);
+}, [headerRef]);
 
   const handleLogout = () => {
     signOut(auth)
@@ -50,6 +52,10 @@ const Header = () => {
         // An error happened.
         toast.error("Something went wrong");
       });
+  };
+
+  const handleUsernameClick = () => {
+    setShowOptions(!showOptions);
   };
 
   // Get currently logged in user
@@ -67,10 +73,17 @@ const Header = () => {
           setDisplayName(user.displayName);
         }
 
+        const firstName = user.displayName
+          ? user.displayName.split(" ")[0]
+          : user.email.split("@")[0].charAt(0).toUpperCase() +
+            user.email.split("@")[0].slice(1);
+
+        setDisplayName(firstName);
+
         dispatch(
           setUserActive({
             email: user.email,
-            userName: user.displayName ? user.displayName : displayName,
+            userName: user.displayName ? user.displayName : firstName,
             userId: user.uid,
             userURL: user.photoURL,
           })
@@ -105,20 +118,6 @@ const Header = () => {
 
             {/* TODO: Nav_links */}
             <div className="navigaion">
-              {/* <ul className="menu">
-                {nav_links.map((item, index) => (
-                  <li className="nav_item" key={index}>
-                    <NavLink
-                      to={item.path}
-                      className={(navClass) =>
-                        navClass.isActive ? "nav_active" : ""
-                      }
-                    >
-                      {item.display}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul> */}
               <ul className="menu">
                 <NavLink
                   to="/home"
@@ -157,19 +156,6 @@ const Header = () => {
                   {" "}
                   Cat
                 </NavLink>
-
-                <AfterLoggedIn>
-                  <NavLink
-                    className={(navClass) =>
-                      navClass.isActive ? "nav_active" : ""
-                    }
-                    to="/login"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </NavLink>
-                </AfterLoggedIn>
-                
               </ul>
             </div>
 
@@ -184,7 +170,23 @@ const Header = () => {
                   <i class="ri-shopping-cart-line"></i>
                   <span className="badge"></span>
                 </span>
-                <a href="/profile">Hi, {displayName}</a>
+                <div
+                  className="username"
+                  onClick={handleUsernameClick}
+                  style={{
+                    position: "relative",
+                    cursor: "pointer",
+                  }}
+                >
+                  Hi, {displayName}
+                  {showOptions && (
+                    <div className="options">
+                      <div onClick={() => navigate("/profile")}>Profile</div>
+                      <div onClick={handleLogout}>Logout</div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="mobile_menu">
                   <span>
                     <i class="ri-menu-line"></i>
@@ -193,15 +195,14 @@ const Header = () => {
               </div>
             </AfterLoggedIn>
             <AfterLoggedOut>
-              <NavLink
+              <button
                 className={(navClass) =>
                   navClass.isActive ? "nav_active" : ""
                 }
-                to="/login"
               >
-                {" "}
-                Login
-              </NavLink>
+                <Link to="/login"> Login</Link>
+              
+              </button>
             </AfterLoggedOut>
           </div>
         </Row>

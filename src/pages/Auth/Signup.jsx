@@ -13,9 +13,8 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { auth } from "../../firebase.config";
-import { db, storage } from "../../firebase.config.js";
+import { db } from "../../firebase.config.js";
 
 import { toast } from "react-toastify";
 import heroImg from "../.././assets/images/loginImg.png";
@@ -38,7 +37,6 @@ const Signup = () => {
       const emailRegex = /\S+@\S+\.\S+/;
       return emailRegex.test(email);
     };
-
 
     // Check if the email is valid
     if (!isValidEmail(email)) {
@@ -75,30 +73,17 @@ const Signup = () => {
 
       const user = userCredential.user;
 
-      const storageRef = ref(storage, `images/${Date.now() + username}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        (error) => {
-          console.log("Something went wrong");
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            let role = "user";
-            if (email === "admin@gmail.com") {
-              // set admin role if email is admin email
-              role = "admin";
-            }
-            await setDoc(doc(db, "users", user.uid), {
-              uid: user.uid,
-              username: username,
-              email,
-              photoURL: downloadURL,
-              role: role,
-            });
-          });
-        }
-      );
+      let role = "user";
+      if (email === "admin@gmail.com") {
+        // set admin role if email is admin email
+        role = "admin";
+      }
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        username: username,
+        email,
+        role: role,
+      });
 
       //setLoading(true);
       console.log("Account created");
@@ -150,12 +135,6 @@ const Signup = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                />
-
-                <input
-                  type="file"
-                  className="form-control"
-                  onChange={(e) => setFile(e.target.files[0])}
                 />
 
                 <button type="submit" className="button_signup">

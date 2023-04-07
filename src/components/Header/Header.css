@@ -6,7 +6,8 @@
 .nav_wrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  column-gap: 140px;
 }
 .logo {
   display: flex;
@@ -32,7 +33,7 @@
   align-items: center;
   column-gap: 2.7rem;
   margin-bottom: 0;
-  padding-right: 80px;
+  padding:  0px 60px 0px 120px;
 }
 
 .nav_item {
@@ -46,6 +47,7 @@
   align-items: center;
   column-gap: 1.5rem;
   padding: 10px;
+  width: 212px;
 }
 
 .nav_icons span i {
@@ -114,3 +116,26 @@
   background: #fff;
 }
 
+.options {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #f3f3f3;
+  box-shadow: 0px 8px 16px 0px rgba(95, 95, 95, 0.2);
+  z-index: 1;
+  padding: 5px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.nav_wrapper button {
+  padding: 0px 25px;
+  border: none;
+  background-color: #36969b;
+  color: #fff;
+  border-radius: 10px;
+  margin-top: 6px;
+  margin-left: 120px;
+}

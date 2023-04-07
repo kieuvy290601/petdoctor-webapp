@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Container, Form, Row } from "reactstrap";
 import Helmet from "../../components/Helmet/Helmet";
@@ -20,9 +20,25 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState("false");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    const storedPassword = localStorage.getItem("password");
+
+    if (storedEmail && storedPassword) {
+      setEmail(storedEmail);
+      setPassword(storedPassword);
+      setRememberMe(true);
+    }
+  }, []);
+
+    const handleRememberMe = () => {
+      setRememberMe(!rememberMe);
+    };
 
   const login = async (e) => {
     e.preventDefault();
@@ -56,6 +72,13 @@ const Login = () => {
       // }
       toast.success("Login Success");
       navigate("/home");
+      if (rememberMe) {
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
+      } else {
+        localStorage.removeItem("email");
+        localStorage.removeItem("password");
+      }
     } catch (error) {
       console.error(error.message);
       setLoading(false);
@@ -76,7 +99,6 @@ const Login = () => {
         // The signed-in user info.
         const user = result.user;
         // set the user role to "user"
-
 
         const userRef = doc(db, "users", user.uid);
         setDoc(userRef, { role: "user" }, { merge: true });
@@ -127,9 +149,18 @@ const Login = () => {
                   required
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <Link to="/resetpassword" style={{ marginLeft: 310 }}>
-                  Forgot Password?
-                </Link>
+                <div className="d-flex justify-content-between">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={handleRememberMe}
+                      style={{  marginRight: 10 }}
+                    />
+                    Remember me
+                  </label>
+                  <Link to="/resetpassword">Forgot Password?</Link>
+                </div>
 
                 <button type="submit" className="button_login">
                   Log In

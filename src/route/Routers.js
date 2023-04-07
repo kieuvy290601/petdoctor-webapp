@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 import AddProduct from "../pages/AddProduct";
 import Login from "../pages/Auth/Login";
+import ResetPassword from "../pages/Auth/ResetPassword";
 import Signup from "../pages/Auth/Signup";
 import Cart from "../pages/Cart";
 import CatShop from "../pages/CatShop";
@@ -12,7 +13,6 @@ import ProductDetail from "../pages/ProductDetail";
 import Profile from "../pages/Profile";
 import Splash from "../pages/Splash";
 import ProtectedRoute from "./ProtectedRoute";
-import ResetPassword from "../pages/Auth/ResetPassword";
 
 const Routers = () => {
   return (
@@ -33,6 +33,7 @@ const Routers = () => {
           </ProtectedRoute>
         }
       />
+
       <Route path="dogshop" element={<DogShop />} />
       <Route path="catshop" element={<CatShop />} />
       <Route path="cart" element={<Cart />} />
