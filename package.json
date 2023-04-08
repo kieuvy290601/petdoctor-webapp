@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "avatar-initials": "^6.0.0",
     "bootstrap": "^5.2.3",
+    "cdbreact": "^1.5.11",
     "firebase": "^9.19.1",
     "firebase-auth": "^0.1.2",
     "fortawesome": "^0.0.1-security",

@@ -4,10 +4,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Form } from "reactstrap";
-import { db, storage } from "../firebase.config";
+import { db, storage } from "../../../firebase.config";
 
-import "../styles/AddProduct.css";
-
+import "./AddProduct.css"
 const AddProduct = () => {
   const [name, setProductName] = useState("");
   const [pet, setPet] = useState("");
@@ -29,19 +28,16 @@ const AddProduct = () => {
       !category ||
       !quantity ||
       !description ||
-      !file 
+      !file
     ) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-
     const storageRef = ref(storage, `productImg/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
-    
-
       (error) => {
         console.log(error);
       },

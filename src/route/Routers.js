@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-import AddProduct from "../pages/AddProduct";
+import AddProduct from "../pages/Admin/AddProduct/AddProduct.jsx";
 import Login from "../pages/Auth/Login";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import Signup from "../pages/Auth/Signup";
@@ -12,6 +12,8 @@ import Home from "../pages/Home";
 import ProductDetail from "../pages/ProductDetail";
 import Profile from "../pages/Profile";
 import Splash from "../pages/Splash";
+import AdminRoute from "./AdminOnly/AdminRoute.jsx";
+import AdminRouter from "./AdminOnly/AdminRouter.jsx";
 import ProtectedRoute from "./ProtectedRoute";
 
 const Routers = () => {
@@ -37,7 +39,14 @@ const Routers = () => {
       <Route path="dogshop" element={<DogShop />} />
       <Route path="catshop" element={<CatShop />} />
       <Route path="cart" element={<Cart />} />
-
+      <Route
+        path="/admin/*"
+        element={
+          <AdminRoute>
+            <AdminRouter />
+          </AdminRoute>
+        }
+      />
       <Route path="addproduct" element={<AddProduct />} />
     </Routes>
   );

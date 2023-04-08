@@ -5,13 +5,17 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Container, Row } from "reactstrap";
 
+import { doc, getDoc } from "firebase/firestore";
 import logo from "../../assets/images/logoww.png";
+import { db } from "../../firebase.config";
 import { removeUserActive, setUserActive } from "../../redux/slices/authSlice";
-import AfterLoggedIn, { AfterLoggedOut } from "../HiddenNavBar/HiddenNav";
+import AdminRoute, { AdminLink } from "../../route/AdminOnly/AdminRoute";
+import AfterLoggedIn, { AfterLoggedOut } from "../../route/AuthenRoute";
 import "./Header.css";
 
 const Header = () => {
   const user = useSelector((state) => state.auth.user);
+
   const navigate = useNavigate();
   const auth = getAuth();
   const headerRef = useRef(null);
@@ -35,11 +39,10 @@ const Header = () => {
     });
   };
 
-
   useEffect(() => {
-  stickyHeader();
-  return () => window.removeEventListener("scroll", stickyHeader);
-}, [headerRef]);
+    stickyHeader();
+    return () => window.removeEventListener("scroll", stickyHeader);
+  }, [headerRef]);
 
   const handleLogout = () => {
     signOut(auth)
@@ -60,10 +63,10 @@ const Header = () => {
 
   // Get currently logged in user
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         console.log(user);
-        // const uid = user.uid;
+
         console.log(user.displayName);
         if (user.displayName === null) {
           const u1 = user.email.substring(0, user.email.indexOf("@"));
@@ -79,15 +82,21 @@ const Header = () => {
             user.email.split("@")[0].slice(1);
 
         setDisplayName(firstName);
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnapshot = await getDoc(userDocRef);
 
-        dispatch(
-          setUserActive({
-            email: user.email,
-            userName: user.displayName ? user.displayName : firstName,
-            userId: user.uid,
-            userURL: user.photoURL,
-          })
-        );
+        if (userDocSnapshot.exists()) {
+          const userRole = userDocSnapshot.data().role;
+          // Dispatch to the Redux store
+          dispatch(
+            setUserActive({
+              email: user.email,
+              userName: user.displayName ? user.displayName : firstName,
+              userId: user.uid,
+              userRole: userRole,
+            })
+          );
+        }
       } else {
         setDisplayName("");
         dispatch(removeUserActive());
@@ -119,43 +128,62 @@ const Header = () => {
             {/* TODO: Nav_links */}
             <div className="navigaion">
               <ul className="menu">
-                <NavLink
-                  to="/home"
-                  className={(navClass) =>
-                    navClass.isActive ? "nav_active" : ""
-                  }
-                >
-                  {" "}
-                  Home
-                </NavLink>
-
-                <NavLink
-                  className={(navClass) =>
-                    navClass.isActive ? "nav_active" : ""
-                  }
-                  to="/services"
-                >
-                  {" "}
-                  Services
-                </NavLink>
-                <NavLink
-                  className={(navClass) =>
-                    navClass.isActive ? "nav_active" : ""
-                  }
-                  to="/dogshop"
-                >
-                  {" "}
-                  Dog
-                </NavLink>
-                <NavLink
-                  className={(navClass) =>
-                    navClass.isActive ? "nav_active" : ""
-                  }
-                  to="/catshop"
-                >
-                  {" "}
-                  Cat
-                </NavLink>
+                <li>
+                  <NavLink
+                    to="/home"
+                    className={(navClass) =>
+                      navClass.isActive ? "nav_active" : ""
+                    }
+                  >
+                    {" "}
+                    Home
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className={(navClass) =>
+                      navClass.isActive ? "nav_active" : ""
+                    }
+                    to="/services"
+                  >
+                    {" "}
+                    Services
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className={(navClass) =>
+                      navClass.isActive ? "nav_active" : ""
+                    }
+                    to="/dogshop"
+                  >
+                    {" "}
+                    Dog
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className={(navClass) =>
+                      navClass.isActive ? "nav_active" : ""
+                    }
+                    to="/catshop"
+                  >
+                    {" "}
+                    Cat
+                  </NavLink>
+                </li>
+                  <li>
+                <AdminLink>
+                    <NavLink
+                      className={(navClass) =>
+                        navClass.isActive ? "nav_active" : ""
+                      }
+                      to="/admin/dashboard"
+                    >
+                      Dashboard
+                    </NavLink>
+                </AdminLink>
+                  </li>
               </ul>
             </div>
 
@@ -201,7 +229,6 @@ const Header = () => {
                 }
               >
                 <Link to="/login"> Login</Link>
-              
               </button>
             </AfterLoggedOut>
           </div>

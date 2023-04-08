@@ -57,19 +57,7 @@ const Login = () => {
       console.log(user);
       console.log("Successfully logged in");
 
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      const userRole = userDoc.data().role;
-      console.log(userRole);
-      // if (userRole === "admin") {
-      //   // setIsAdmin(true);
-      //   // setUserRole("admin");
-      //   console.log(userRole);
-      // } else {
-      //   // setIsAdmin(false);
-      //   // setUserRole("user");
-
-      //   console.log(userRole);
-      // }
+      
       toast.success("Login Success");
       navigate("/home");
       if (rememberMe) {
