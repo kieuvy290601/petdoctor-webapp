@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import logo from "../../../assets/images/logoww.png";
+import { signOut } from "firebase/auth";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import logo from "../../assets/images/logoww.png";
+import { auth } from "../../firebase.config";
 import "./Sidebar.css";
 
 const Sidebar = () => {
-
-  const sidebarLinks = document.querySelectorAll(
-    ".sidebar_link li a",
-  );
+  const navigate = useNavigate();
+  const sidebarLinks = document.querySelectorAll(".sidebar_link li a");
 
   sidebarLinks.forEach((link) => {
     link.addEventListener("click", () => {
@@ -15,6 +16,19 @@ const Sidebar = () => {
       link.classList.add("active");
     });
   });
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        toast.success("Logout successfully");
+        navigate("/login");
+      })
+      .catch((error) => {
+        // An error happened.
+        toast.error("Something went wrong");
+      });
+  };
 
   return (
     <div className={"sidebav_container"}>
@@ -46,7 +60,6 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          
           <li className="link">
             <Link to="/admin/orders" className="sidebar_link-item">
               View Orders
@@ -55,22 +68,11 @@ const Sidebar = () => {
         </ul>
       </div>
 
-      <div className="nav-footer">
-        <ul>
-          <li>
-            <Link
-              to="/logout"
-              className="sidebar_link-item"
-              style={{ display: "flex" }}
-            >
-              <i
-                className="ri-logout-box-r-line"
-                style={{ marginRight: 10 }}
-              ></i>
-              Log Out
-            </Link>
-          </li>
-        </ul>
+      <div className="nav-footer" onClick={handleLogout}>
+        <p className="sidebar_link-item" style={{ display: "flex" }}>
+          <i className="ri-logout-box-r-line" style={{ marginRight: 10 }}></i>
+          Log Out
+        </p>
       </div>
     </div>
   );

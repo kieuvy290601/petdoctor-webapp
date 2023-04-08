@@ -1,8 +1,8 @@
 .sidebav_container {
   background-color: var(--primary-color);
   width: 240px;
-  height: 100vh;
-  position: relative;
+  height: 102vh;
+  position: fixed;
   color: #fff;
   transition: 0.4s;
 }
@@ -80,5 +80,11 @@
   padding-left: 7px;
   position: absolute;
   bottom: 0;
+}
+
+.nav-footer p {
+  font-weight: normal;
+  color: #fff;
+  font-style: 17px;
 }
 

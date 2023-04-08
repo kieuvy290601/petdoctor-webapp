@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../firebase.config";
 
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import heroImg from "../.././assets/images/loginImg.png";
 import Loading from "../../components/Loading/Loading";
@@ -22,7 +22,6 @@ const Login = () => {
   const [isLoading, setLoading] = useState("false");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,9 +35,9 @@ const Login = () => {
     }
   }, []);
 
-    const handleRememberMe = () => {
-      setRememberMe(!rememberMe);
-    };
+  const handleRememberMe = () => {
+    setRememberMe(!rememberMe);
+  };
 
   const login = async (e) => {
     e.preventDefault();
@@ -57,9 +56,15 @@ const Login = () => {
       console.log(user);
       console.log("Successfully logged in");
 
-      
       toast.success("Login Success");
-      navigate("/home");
+
+      if (user && user.email === "admin@gmail.com") {
+        // replace this email address with your admin account's email
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/home");
+      }
+
       if (rememberMe) {
         localStorage.setItem("email", email);
         localStorage.setItem("password", password);
@@ -143,7 +148,7 @@ const Login = () => {
                       type="checkbox"
                       checked={rememberMe}
                       onChange={handleRememberMe}
-                      style={{  marginRight: 10 }}
+                      style={{ marginRight: 10 }}
                     />
                     Remember me
                   </label>
