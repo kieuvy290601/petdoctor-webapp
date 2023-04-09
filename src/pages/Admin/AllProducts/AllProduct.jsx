@@ -3,17 +3,9 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
 
-import {
-  addDoc,
-  collection,
-  getDocs,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { addDoc, collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { Col, Form } from "reactstrap";
 import { db, storage } from "../../../firebase.config";
 import "./AllProduct.css";
@@ -26,10 +18,30 @@ const AllProduct = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+  //Implement pagination
+
+  const totalPages = Math.ceil(data.length / PAGE_SIZE);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const currentData = data.slice(startIndex, endIndex);
+
+  //Implement fields for adding products
+  const [prdName, setPrdName] = useState("");
+  const [prdPrice, setPrdPrice] = useState(null);
+  const [prdQuantity, setPrdQuantity] = useState(null);
+  const [prdCategory, setPrdCategory] = useState("");
+  const [prdSubCategory, setPrdSubCategory] = useState("");
+  const [prdShortDesc, setPrdShortDesc] = useState("");
+  const [prdDesc, setPrdDesc] = useState("");
+  const [prdDirection, setPrdDirection] = useState("");
+  const [prdURL, setPrdURL] = useState(null);
 
   // TODO: Set show modal
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -52,7 +64,6 @@ const AllProduct = () => {
           where("prdName", ">=", searchTerm),
           orderBy("prdName")
         );
-
         // Add the following line to also search for products whose prdName field includes the search term:
         q = query(
           prdList,
@@ -61,22 +72,16 @@ const AllProduct = () => {
           orderBy("prdName")
         );
       }
+
       const querySnapshot = await getDocs(q);
       const data = querySnapshot.docs.map((doc) => ({
         prdId: doc.id,
         ...doc.data(),
       }));
-
       setData(data);
     };
-
     fetchData();
   }, [selectedCategory, selectedSubcategory, searchTerm]);
-
-  const totalPages = Math.ceil(data.length / PAGE_SIZE);
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const endIndex = startIndex + PAGE_SIZE;
-  const currentData = data.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNum) => {
     setCurrentPage(pageNum);
@@ -94,56 +99,57 @@ const AllProduct = () => {
     setSearchTerm(e.target.value);
   };
 
-  const [name, setProductName] = useState("");
-  const [pet, setPet] = useState("");
-  const [price, setProductPrice] = useState(0);
-  const [category, setProductCategory] = useState("");
-  const [quantity, setProductQuantity] = useState(0);
-  const [description, setProducDescription] = useState("");
-  const [file, setFile] = useState("");
-
   const navigate = useNavigate();
+
+  const handleURLChange = (e) => {
+    if (e.target.files[0]) {
+      setPrdURL(e.target.files[0]);
+    }
+  };
 
   const createData = async (e) => {
     e.preventDefault();
+     setIsSubmitting(true);
 
-    if (
-      !name ||
-      !pet ||
-      !price ||
-      !category ||
-      !quantity ||
-      !description ||
-      !file
-    ) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    const storageRef = ref(storage, `productImg/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const storageRef = ref(storage, `productsURL/${prdURL.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, prdURL);
 
     uploadTask.on(
       (error) => {
         console.log(error);
       },
       () => {
-        // once the file is uploaded, get the download URL and add the product data to Firestore
-        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-          const dataRef = await addDoc(collection(db, "products"), {
-            prdName: name,
-            prdPet: pet,
-            prdPrice: price,
-            prdCategory: category,
-            prdQuantity: quantity,
-            prdDesc: description,
-            prdURL: downloadURL,
-          });
-          console.log("Added product successfully with ID: ", dataRef.id);
-          navigate("/dogcare");
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          addDoc(collection(db, "products"), {
+            prdName,
+            prdPrice,
+            prdQuantity,
+            prdCategory,
+            prdSubCategory,
+            prdShortDesc,
+            prdDesc,
+            prdDirection,
+            prdURL: url,
+          })
+            .then(() => {
+              setPrdName("");
+              setPrdPrice(null);
+              setPrdQuantity(null);
+              setPrdCategory("");
+              setPrdSubCategory("");
+              setPrdShortDesc("");
+              setPrdDesc("");
+              setPrdDirection("");
+              setPrdURL(null);
+              setIsSubmitting(false);
+              handleClose();
+            })
+            .catch((error) => {
+              console.error("Error adding document: ", error);
+            });
+          navigate("/admin/allproduct");
         });
-      }
-    );
+    });
   };
 
   return (
@@ -158,12 +164,12 @@ const AllProduct = () => {
             <Button className="deli" onClick={handleShow}>
               Add product
             </Button>
-            <Modal show={show} size="md" onHide={handleClose}>
+            <Modal show={show} size="lg" onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Add new product</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div style={{padding: 20}}>
+                <div style={{ padding: 20 }}>
                   <Form onSubmit={createData}>
                     <div className="col-md-6">
                       <label>Product Name</label>
@@ -171,10 +177,11 @@ const AllProduct = () => {
                         type="text"
                         className="border"
                         placeholder="Enter name of your product"
-                        value={name}
-                        onChange={(e) => setProductName(e.target.value)}
-                        style={{ width: 566 }}
                         required
+                        id="prdName"
+                        value={prdName}
+                        onChange={(e) => setPrdName(e.target.value)}
+                        style={{ width: 566 }}
                       />
                     </div>
 
@@ -185,11 +192,10 @@ const AllProduct = () => {
                           type="text"
                           className="border"
                           placeholder="Example: $30"
-                          value={price}
-                          onChange={(e) =>
-                            setProductPrice(Number(e.target.value))
-                          }
                           required
+                          id="prdPrice"
+                          value={prdPrice}
+                          onChange={(e) => setPrdPrice(Number(e.target.value))}
                         />
                       </div>
                       <div className="col-md-6">
@@ -199,22 +205,24 @@ const AllProduct = () => {
                           type="text"
                           className="border"
                           placeholder="Example: 350"
-                          value={quantity}
+                          id="prdQuantity"
+                          value={prdQuantity}
                           onChange={(e) =>
-                            setProductQuantity(Number(e.target.value))
+                            setPrdQuantity(Number(e.target.value))
                           }
                         />
                       </div>
                     </div>
                     <div className="row gx-3">
                       <div className="col-md-6 mb-3">
-                        <label className="mb-2">Choose Pet</label>
+                        <label className="mb-2">Category</label>
 
                         <select
                           required
                           className="form-select"
-                          value={pet}
-                          onChange={(e) => setPet(e.target.value)}
+                          id="prdCategory"
+                          value={prdCategory}
+                          onChange={(e) => setPrdCategory(e.target.value)}
                         >
                           <option>Choose pet</option>
                           <option value="Dog">Dog</option>
@@ -222,13 +230,14 @@ const AllProduct = () => {
                         </select>
                       </div>
                       <div className="col-md-6">
-                        <label className="mb-2">Category</label>
+                        <label className="mb-2">Sub Category</label>
 
                         <select
                           required
                           className="form-select"
-                          value={category}
-                          onChange={(e) => setProductCategory(e.target.value)}
+                          id="prdSubCategory"
+                          value={prdSubCategory}
+                          onChange={(e) => setPrdSubCategory(e.target.value)}
                         >
                           <option>Choose category</option>
                           <option value="Vaccine">Vaccine</option>
@@ -242,11 +251,24 @@ const AllProduct = () => {
                       <label className="mb-2">Product Image</label>
                       <input
                         type="file"
+                        id="prdURL"
                         className="form-control"
                         style={{ width: 566 }}
-                        onChange={(e) => setFile(e.target.files[0])}
+                        onChange={handleURLChange}
                         required
                       />
+                    </div>
+                    <div className="my-3">
+                      <label className="mb-2">Short Description</label>
+                      <textarea
+                        className="form-control"
+                        style={{ backgroundColor: "#dde3e6" }}
+                        placeholder="Enter description here"
+                        rows="1"
+                        id="prdShortDesc"
+                        value={prdShortDesc}
+                        onChange={(e) => setPrdShortDesc(e.target.value)}
+                      ></textarea>
                     </div>
                     <div className="my-3">
                       <label className="mb-2">Description</label>
@@ -255,8 +277,21 @@ const AllProduct = () => {
                         style={{ backgroundColor: "#dde3e6" }}
                         placeholder="Enter description here"
                         rows="3"
-                        value={description}
-                        onChange={(e) => setProducDescription(e.target.value)}
+                        id="prdDesc"
+                        value={prdDesc}
+                        onChange={(e) => setPrdDesc(e.target.value)}
+                      ></textarea>
+                    </div>
+                    <div className="my-3">
+                      <label className="mb-2">Direction</label>
+                      <textarea
+                        className="form-control"
+                        style={{ backgroundColor: "#dde3e6" }}
+                        placeholder="Enter description here"
+                        rows="3"
+                        id="prdDirection"
+                        value={prdDirection}
+                        onChange={(e) => setPrdDirection(e.target.value)}
                       ></textarea>
                     </div>
                     <div
@@ -269,21 +304,17 @@ const AllProduct = () => {
                       >
                         Cancel
                       </button>
-                      <button type="submit" className="btn_add text-white">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="btn_add text-white"
+                      >
                         Add
                       </button>
                     </div>
                   </Form>
                 </div>
               </Modal.Body>
-              <Modal.Footer className="mr-4">
-                <Button variant="danger" onClick={handleClose}>
-                  Close
-                </Button>
-                <Button variant="success" type="submit" onClick={handleClose}>
-                  Save Changes
-                </Button>
-              </Modal.Footer>
             </Modal>
           </div>
           <Col md="5" className="d-flex">
@@ -345,8 +376,8 @@ const AllProduct = () => {
                 <td>{startIndex + index + 1}</td>
                 <td>{item.prdName}</td>
                 <td>${item.prdPrice}</td>
-                <td>{item.prdPet}</td>
                 <td>{item.prdCategory}</td>
+                <td>{item.prdSubCategory}</td>
                 <td className="action">
                   <span>
                     <i

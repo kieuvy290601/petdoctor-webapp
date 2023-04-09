@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { Form } from "reactstrap";
 import { db, storage } from "../../../firebase.config";
 
-import "./AddProduct.css"
+import "./AddProduct.css";
 const AddProduct = () => {
   const [name, setProductName] = useState("");
   const [pet, setPet] = useState("");
@@ -15,6 +15,24 @@ const AddProduct = () => {
   const [quantity, setProductQuantity] = useState(0);
   const [description, setProducDescription] = useState("");
   const [file, setFile] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const [product, setProduct] = useState({
+    prdName: "",
+    prdURL: "",
+    prdPrice: null,
+    prdCategory: "",
+    prdSubCategory: "",
+    prdQuantity: null,
+    prdShortDesc: "",
+    prdDescription: "",
+    prdDirection: "",
+  });
+
+  const handelInputChange = (e) => {};
+  const handelURLChange = (e) => {};
 
   const navigate = useNavigate();
 
