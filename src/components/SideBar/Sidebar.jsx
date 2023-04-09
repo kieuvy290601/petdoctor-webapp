@@ -10,13 +10,14 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const sidebarLinks = document.querySelectorAll(".sidebar_link li a");
 
-  sidebarLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      sidebarLinks.forEach((link) => link.classList.remove("active"));
-      link.classList.add("active");
-    });
-  });
-
+  const handleSidebarClick = (event) => {
+    const clickedLink = event.target.closest(".sidebar_link-item");
+    if (clickedLink) {
+      const allLinks = document.querySelectorAll(".sidebar_link-item");
+      allLinks.forEach((link) => link.classList.remove("active"));
+      clickedLink.classList.add("active");
+    }
+  };
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
@@ -30,6 +31,15 @@ const Sidebar = () => {
       });
   };
 
+  const LogoutButton = () => {
+    return (
+      <Link to="#" className="sidebar_link-item" onClick={handleLogout}>
+        <i className="ri-logout-box-r-line" style={{ marginRight: 10 }}></i>
+        Log Out
+      </Link>
+    );
+  };
+
   return (
     <div className={"sidebav_container"}>
       <div className="nav_heading">
@@ -38,7 +48,7 @@ const Sidebar = () => {
           <h2>PETOPIA</h2>
         </div>
       </div>
-      <div className="nav-menu">
+      <div className="nav-menu" onClick={handleSidebarClick}>
         <ul className="sidebar_link">
           <li className="link">
             <Link
@@ -55,7 +65,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className="link">
-            <Link to="/admin/addproduct" className="sidebar_link-item">
+            <Link to="/admin/allproduct" className="sidebar_link-item">
               Products
             </Link>
           </li>
@@ -66,13 +76,9 @@ const Sidebar = () => {
             </Link>
           </li>
         </ul>
-      </div>
-
-      <div className="nav-footer" onClick={handleLogout}>
-        <p className="sidebar_link-item" style={{ display: "flex" }}>
-          <i className="ri-logout-box-r-line" style={{ marginRight: 10 }}></i>
-          Log Out
-        </p>
+        <div className="nav-footer" onClick={handleLogout}>
+          <LogoutButton />
+        </div>
       </div>
     </div>
   );

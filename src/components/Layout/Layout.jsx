@@ -11,14 +11,29 @@ const Layout = () => {
 
   if (userRole === "admin") {
     return (
-      <div>
-        <div className="row">
-          <div className="col-md-3">
-            <Sidebar />
-          </div>
-          <div className="col-sm-9">
-            <Routers />
-          </div>
+      // <div>
+      //   <div className="row">
+      //     <div className="col" style={{}}>
+      //       <Sidebar />
+      //     </div>
+      //     <div className="col-sm-9">
+      //       <Routers />
+      //     </div>
+      //   </div>
+      // </div>
+
+      <div
+        style={{
+          display: "flex",
+          height: "100vh",
+          width: "100vw",
+        }}
+      >
+        <div style={{ height: "100%" }}>
+          <Sidebar style={{ overflowY: "auto" }} />
+        </div>
+        <div style={{ width: "100vw", height: "100%", overflowY: "auto" }}>
+          <Routers />
         </div>
       </div>
     );
