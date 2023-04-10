@@ -22,10 +22,10 @@ const DogPharm = () => {
       const prdList = collection(db, "products");
       // 
       
-    let q = query(prdList, where("prdPet", "==", "Cat"));
+    let q = query(prdList, where("prdCategory", "==", "Cat"));
 
     if (selectedOption !== "all") {
-      q = query(q, where("prdCategory", "==", selectedOption));
+      q = query(q, where("prdSubCategory", "==", selectedOption));
     }
 
     if (sortOrder === "asc") {

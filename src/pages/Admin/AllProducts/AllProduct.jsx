@@ -3,9 +3,18 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
 
-import { addDoc, collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Col, Form } from "reactstrap";
 import { db, storage } from "../../../firebase.config";
 import "./AllProduct.css";
@@ -18,9 +27,6 @@ const AllProduct = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   //Implement pagination
 
@@ -29,21 +35,26 @@ const AllProduct = () => {
   const endIndex = startIndex + PAGE_SIZE;
   const currentData = data.slice(startIndex, endIndex);
 
-  //Implement fields for adding products
-  const [prdName, setPrdName] = useState("");
-  const [prdPrice, setPrdPrice] = useState(null);
-  const [prdQuantity, setPrdQuantity] = useState(null);
-  const [prdCategory, setPrdCategory] = useState("");
-  const [prdSubCategory, setPrdSubCategory] = useState("");
-  const [prdShortDesc, setPrdShortDesc] = useState("");
-  const [prdDesc, setPrdDesc] = useState("");
-  const [prdDirection, setPrdDirection] = useState("");
-  const [prdURL, setPrdURL] = useState(null);
-
   // TODO: Set show modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const initialState = {
+    prdName: "",
+    prdPrice: 0,
+    prdQuantity: 0,
+    prdCategory: "",
+    prdSubCategory: "",
+    prdDesc: "",
+    prdShortDesc: "",
+    prdDirection: "",
+    prdURL: "",
+  };
+
+  const [product, setProduct] = useState({
+    ...initialState,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,11 +62,11 @@ const AllProduct = () => {
       let q = prdList;
 
       if (selectedCategory !== "") {
-        q = query(prdList, where("prdPet", "==", selectedCategory));
+        q = query(prdList, where("prdCategory", "==", selectedCategory));
       }
 
       if (selectedSubcategory !== "") {
-        q = query(q, where("prdCategory", "==", selectedSubcategory));
+        q = query(q, where("prdSubCategory", "==", selectedSubcategory));
       }
 
       if (searchTerm !== "") {
@@ -83,6 +94,36 @@ const AllProduct = () => {
     fetchData();
   }, [selectedCategory, selectedSubcategory, searchTerm]);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProduct({ ...product, [name]: value });
+  };
+
+  const handleURLChange = (e) => {
+    const prdURL = e.target.files[0];
+
+    const storageRef = ref(storage, `productImg/${prdURL.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, prdURL);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      },
+      (error) => {
+        toast.error(error.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setProduct({ ...product, prdURL: downloadURL });
+          toast.success("Image uploaded successfully.");
+        });
+      }
+    );
+  };
+  
+
   const handlePageChange = (pageNum) => {
     setCurrentPage(pageNum);
   };
@@ -101,55 +142,45 @@ const AllProduct = () => {
 
   const navigate = useNavigate();
 
-  const handleURLChange = (e) => {
-    if (e.target.files[0]) {
-      setPrdURL(e.target.files[0]);
-    }
-  };
 
   const createData = async (e) => {
     e.preventDefault();
-     setIsSubmitting(true);
+    // console.log(product);
 
-    const storageRef = ref(storage, `productsURL/${prdURL.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, prdURL);
+    
+    if (
+      !product.prdName ||
+      !product.prdQuantity ||
+      !product.prdPrice ||
+      !product.prdCategory ||
+      !product.prdSubCategory ||
+      !product.prdURL
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
-    uploadTask.on(
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          addDoc(collection(db, "products"), {
-            prdName,
-            prdPrice,
-            prdQuantity,
-            prdCategory,
-            prdSubCategory,
-            prdShortDesc,
-            prdDesc,
-            prdDirection,
-            prdURL: url,
-          })
-            .then(() => {
-              setPrdName("");
-              setPrdPrice(null);
-              setPrdQuantity(null);
-              setPrdCategory("");
-              setPrdSubCategory("");
-              setPrdShortDesc("");
-              setPrdDesc("");
-              setPrdDirection("");
-              setPrdURL(null);
-              setIsSubmitting(false);
-              handleClose();
-            })
-            .catch((error) => {
-              console.error("Error adding document: ", error);
-            });
-          navigate("/admin/allproduct");
-        });
-    });
+    try {
+      const dataRef = addDoc(collection(db, "products"), {
+        prdName: product.prdName,
+        prdPrice: Number(product.prdPrice),
+        prdQuantity: Number(product.prdQuantity),
+        prdCategory: product.prdCategory,
+        prdSubCategory: product.prdSubCategory,
+        prdDesc: product.prdDesc,
+        prdShortDesc: product.prdShortDesc,
+        prdDirection: product.prdDirection,
+        prdURL: product.prdURL,
+        createAt: Timestamp.now().toDate(),
+      });
+      console.log(product.prdURL);
+      setProduct({ ...initialState });
+      handleClose();
+      toast.success("Product added successfully.");
+      navigate("/admin/allproduct");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -169,60 +200,59 @@ const AllProduct = () => {
                 <Modal.Title>Add new product</Modal.Title>
               </Modal.Header>
               <Modal.Body>
+                <p style={{ paddingLeft: 18 }}>* Indicates a required field</p>
                 <div style={{ padding: 20 }}>
                   <Form onSubmit={createData}>
                     <div className="col-md-6">
-                      <label>Product Name</label>
+                      <label>Product Name *</label>
                       <input
                         type="text"
                         className="border"
                         placeholder="Enter name of your product"
+                        name="prdName"
+                        value={product.prdName}
+                        onChange={(e) => handleInputChange(e)}
+                        style={{ width: 724 }}
                         required
-                        id="prdName"
-                        value={prdName}
-                        onChange={(e) => setPrdName(e.target.value)}
-                        style={{ width: 566 }}
                       />
                     </div>
 
                     <div className="row gx-3">
                       <div className="col-md-6">
-                        <label>Product Price</label>
+                        <label>Product Price *</label>
                         <input
                           type="text"
                           className="border"
-                          placeholder="Example: $30"
+                          name="prdPrice"
+                          placeholder="Example: 350"
+                          value={product.prdPrice}
+                          onChange={(e) => handleInputChange(e)}
                           required
-                          id="prdPrice"
-                          value={prdPrice}
-                          onChange={(e) => setPrdPrice(Number(e.target.value))}
                         />
                       </div>
                       <div className="col-md-6">
-                        <label>Available Quantity</label>
+                        <label>Available Quantity *</label>
                         <input
-                          required
                           type="text"
                           className="border"
+                          name="prdQuantity"
                           placeholder="Example: 350"
-                          id="prdQuantity"
-                          value={prdQuantity}
-                          onChange={(e) =>
-                            setPrdQuantity(Number(e.target.value))
-                          }
+                          value={product.prdQuantity}
+                          onChange={(e) => handleInputChange(e)}
+                          required
                         />
                       </div>
                     </div>
                     <div className="row gx-3">
                       <div className="col-md-6 mb-3">
-                        <label className="mb-2">Category</label>
+                        <label className="mb-2">Category *</label>
 
                         <select
-                          required
                           className="form-select"
-                          id="prdCategory"
-                          value={prdCategory}
-                          onChange={(e) => setPrdCategory(e.target.value)}
+                          name="prdCategory"
+                          value={product.prdCategory}
+                          onChange={(e) => handleInputChange(e)}
+                          required
                         >
                           <option>Choose pet</option>
                           <option value="Dog">Dog</option>
@@ -230,14 +260,14 @@ const AllProduct = () => {
                         </select>
                       </div>
                       <div className="col-md-6">
-                        <label className="mb-2">Sub Category</label>
+                        <label className="mb-2">Sub Category *</label>
 
                         <select
-                          required
+                          name="prdSubCategory"
                           className="form-select"
-                          id="prdSubCategory"
-                          value={prdSubCategory}
-                          onChange={(e) => setPrdSubCategory(e.target.value)}
+                          value={product.prdSubCategory}
+                          onChange={(e) => handleInputChange(e)}
+                          required
                         >
                           <option>Choose category</option>
                           <option value="Vaccine">Vaccine</option>
@@ -248,13 +278,14 @@ const AllProduct = () => {
                     </div>
 
                     <div className="col-md-6">
-                      <label className="mb-2">Product Image</label>
+                      <label className="mb-2">Product Image *</label>
                       <input
                         type="file"
-                        id="prdURL"
+                        accept="image/*"
+                        name="prdURL"
                         className="form-control"
-                        style={{ width: 566 }}
-                        onChange={handleURLChange}
+                        style={{ width: 724 }}
+                        onChange={(e) => handleURLChange(e)}
                         required
                       />
                     </div>
@@ -263,11 +294,11 @@ const AllProduct = () => {
                       <textarea
                         className="form-control"
                         style={{ backgroundColor: "#dde3e6" }}
-                        placeholder="Enter description here"
-                        rows="1"
-                        id="prdShortDesc"
-                        value={prdShortDesc}
-                        onChange={(e) => setPrdShortDesc(e.target.value)}
+                        placeholder="Enter description here"                        
+                        rows="2"
+                        name="prdShortDesc"
+                        value={product.prdShortDesc}
+                        onChange={(e) => handleInputChange(e)}
                       ></textarea>
                     </div>
                     <div className="my-3">
@@ -277,21 +308,22 @@ const AllProduct = () => {
                         style={{ backgroundColor: "#dde3e6" }}
                         placeholder="Enter description here"
                         rows="3"
-                        id="prdDesc"
-                        value={prdDesc}
-                        onChange={(e) => setPrdDesc(e.target.value)}
+                        name="prdDesc"
+                        value={product.prdDesc}
+                        onChange={(e) => handleInputChange(e)}
                       ></textarea>
                     </div>
                     <div className="my-3">
-                      <label className="mb-2">Direction</label>
+                      <label className="mb-2">Direction *</label>
                       <textarea
                         className="form-control"
                         style={{ backgroundColor: "#dde3e6" }}
                         placeholder="Enter description here"
                         rows="3"
-                        id="prdDirection"
-                        value={prdDirection}
-                        onChange={(e) => setPrdDirection(e.target.value)}
+                        name="prdDirection"
+                        value={product.prdDirection}
+                        onChange={(e) => handleInputChange(e)}
+                        required
                       ></textarea>
                     </div>
                     <div
@@ -304,15 +336,13 @@ const AllProduct = () => {
                       >
                         Cancel
                       </button>
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="btn_add text-white"
-                      >
+                      <button type="submit" className="btn_add text-white">
                         Add
                       </button>
                     </div>
+                    
                   </Form>
+                  
                 </div>
               </Modal.Body>
             </Modal>

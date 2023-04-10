@@ -21,10 +21,10 @@ const DogPharm = () => {
   useEffect(() => {
     const fetchData = async () => {
       const prdList = collection(db, "products");
-      let q = query(prdList, where("prdPet", "==", "Dog"));
+      let q = query(prdList, where("prdCategory", "==", "Dog"));
 
       if (selectedOption !== "all") {
-        q = query(q, where("prdCategory", "==", selectedOption));
+        q = query(q, where("prdSubCategory", "==", selectedOption));
       }
 
       if (sortOrder === "asc") {
@@ -63,7 +63,7 @@ const DogPharm = () => {
 
   const handleSortOrderChange = () => {
     // Step 2
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setSortOrder(sortOrder);
   };
 
   return (

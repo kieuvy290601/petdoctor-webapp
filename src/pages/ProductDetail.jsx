@@ -83,7 +83,7 @@ const ProductDetail = () => {
               <img
                 src={item.prdURL}
                 alt=""
-                style={{ width: "85%", marginLeft: 30 }}
+                style={{ width: "70%", marginLeft: 40, marginTop: 10 }}
               />
             </div>
             <div className="col-lg-7">
@@ -113,7 +113,7 @@ const ProductDetail = () => {
                   <span className="prd_price"> &#36;{item.prdPrice}</span>
                 </p>
                 <p className="desc">
-                  Description:&nbsp; <span>{item.prdDesc}</span>
+                  Description:&nbsp; <span>{item.prdShortDesc}</span>
                 </p>
                 <div
                   className="d-flex align-items-center py-2"
@@ -142,7 +142,11 @@ const ProductDetail = () => {
                   </span>
                 </div>
 
-                <motion.button whileTap={{ scale: 1.1 }} className="buy_btn" onClick={addtoCart}>
+                <motion.button
+                  whileTap={{ scale: 1.1 }}
+                  className="buy_btn"
+                  onClick={addtoCart}
+                >
                   Add to cart
                 </motion.button>
               </div>
@@ -169,11 +173,19 @@ const ProductDetail = () => {
             </div>
             {tab === "overview" ? (
               <div className="tab_content">
-                <p>{item.prdDesc}</p>
+                <pre
+                  style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
+                >
+                  {item.prdDesc}
+                </pre>
               </div>
             ) : (
               <div className="tab_content">
-                <p>{item.prdName}</p>
+                <pre
+                  style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
+                >
+                  {item.prdDirection}
+                </pre>
               </div>
             )}
           </Row>
