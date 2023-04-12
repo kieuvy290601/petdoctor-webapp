@@ -20,7 +20,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Col, Form } from "reactstrap";
 import { db, storage } from "../../../firebase.config";
@@ -34,6 +34,7 @@ const AllProduct = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   //Implement pagination
 
@@ -44,9 +45,10 @@ const AllProduct = () => {
 
   // TODO: Set show modal
   const [show, setShow] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const handleCloseDetail = () => setShowDetail(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
 
   const initialState = {
     prdName: "",
@@ -63,7 +65,6 @@ const AllProduct = () => {
   const [product, setProduct] = useState({
     ...initialState,
   });
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,6 +133,11 @@ const AllProduct = () => {
         });
       }
     );
+  };
+
+  const handleProductSelect = (item) => {
+    setSelectedProduct(item);
+    setShowDetail(true);
   };
 
   const handlePageChange = (pageNum) => {
@@ -204,9 +210,6 @@ const AllProduct = () => {
       await deleteObject(imgRef);
 
       toast.success("Product deleted successfully.");
-      
-    
-      
     } catch (error) {
       console.error("Error deleting product:", error);
     }
@@ -415,6 +418,68 @@ const AllProduct = () => {
             </div>
           </Col>
         </div>
+        <Modal size="lg" show={showDetail} onHide={handleCloseDetail}>
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedProduct?.prdName}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="detail-modal-container">
+            <div className="detail-modal">
+              <div className="col-md-12 d-flex">
+                <div className="product-detail col-md-4">
+                  <h6>Product Price:</h6>
+                  <input disabled value={"$" + selectedProduct?.prdPrice} />
+                </div>
+                <div className="product-detail col-md-4">
+                  <h6>Available Quantity: </h6>
+                  <input disabled value={selectedProduct?.prdQuantity} />
+                </div>
+              </div>
+              <div className="col-md-12 d-flex">
+                <div className="product-detail col-md-4">
+                  <h6>Category: </h6>
+                  <input disabled value={selectedProduct?.prdCategory} />
+                </div>
+                <div className="product-detail col-md-4">
+                  <h6>Subcategory </h6>
+                  <input disabled value={selectedProduct?.prdSubCategory} />
+                </div>
+              </div>
+              <div className="col-md-12 d-flex">
+                <div className="product-detail col-md-12">
+                  <h6>Short Description: </h6>
+                  <input
+                    style={{ width: "87%" }}
+                    disabled
+                    value={selectedProduct?.prdShortDesc}
+                  />
+                </div>
+              </div>
+              <div className="col-md-12 d-flex">
+                <div className="product-detail">
+                  <h6>Description: </h6>
+                  <pre style={{ width: "100%", height: "auto" }}>
+                    {selectedProduct?.prdDesc}
+                  </pre>
+                </div>
+              </div>
+              <div className="col-md-12 d-flex">
+                <div className="product-detail">
+                  <h6>Direction: </h6>
+                  <pre style={{ width: "100%", height: "auto" }}>
+                    {selectedProduct?.prdDirection}
+                  </pre>
+                </div>
+              </div>              
+              </div>
+              </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseDetail}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
         <Table striped bordered hover>
           <thead className="thead">
             <tr>
@@ -445,7 +510,10 @@ const AllProduct = () => {
                     ></i>
                   </span>
                   <span>
-                    <i className="ri-eye-line"></i>
+                    <i
+                      className="ri-eye-line"
+                      onClick={() => handleProductSelect(item)}
+                    ></i>
                   </span>
                   <span>
                     <i

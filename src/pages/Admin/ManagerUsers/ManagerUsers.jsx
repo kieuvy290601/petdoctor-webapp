@@ -28,7 +28,7 @@ const PAGE_SIZE = 10;
 
 const ManagerUsers = () => {
   // TODO: Set show modal
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false); 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -82,6 +82,7 @@ const ManagerUsers = () => {
     );
   };
 
+
   const navigate = useNavigate();
 
   const addUser = async (e) => {
@@ -130,9 +131,9 @@ const ManagerUsers = () => {
           orderBy("displayName")
         );
       }
-      // else {
-      //   u = query(userList, orderBy("createAt", "desc"));
-      // }
+      else {
+        u = query(userList, orderBy("createAt", "desc"));
+      }
 
       const querySnapshot = await getDocs(u);
       const data = querySnapshot.docs
@@ -271,6 +272,8 @@ const ManagerUsers = () => {
             </div>
           </Col>
         </div>
+        
+
         <Table striped bordered hover>
           <thead className="thead">
             <tr>
@@ -299,9 +302,6 @@ const ManagerUsers = () => {
                       className="ri-edit-2-line"
                       style={{ color: "#7bbb1a" }}
                     ></i>
-                  </span>
-                  <span>
-                    <i className="ri-eye-line"></i>
                   </span>
                   <span>
                     <i

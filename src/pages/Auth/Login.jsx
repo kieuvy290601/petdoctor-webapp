@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../firebase.config";
 
-import { doc, setDoc } from "firebase/firestore";
+import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import heroImg from "../.././assets/images/loginImg.png";
 import Loading from "../../components/Loading/Loading";
@@ -101,6 +101,7 @@ const Login = () => {
             email: user.email,
             photoURL: user.photoURL,
             uid: user.uid,
+            createAt: Timestamp.now().toDate(),
           },
           { merge: true }
         );
