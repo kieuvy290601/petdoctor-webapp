@@ -94,7 +94,7 @@ const Login = () => {
         // set the user role to "user"
 
         const userRef = doc(db, "users", user.uid);
-        setDoc(userRef, { role: "user" }, { merge: true });
+        setDoc(userRef, { role: "user", displayName: user.displayName, email: user.email, photoUrl: user.photoURL, uid: user.uid }, { merge: true });
 
         // db.collection("users").doc(user.uid).set(
         //   {
@@ -158,28 +158,27 @@ const Login = () => {
                 <button type="submit" className="button_login">
                   Log In
                 </button>
-                <p className="text-center">Or</p>
-                <button className="gg_login" onClick={logInWithGoogle}>
-                  <i
-                    class="ri-google-fill"
-                    style={{
-                      fontSize: "21px",
-                      display: "inline-block",
-                      verticalAlign: "middle",
-                      marginRight: "0.5em",
-                    }}
-                  ></i>
-                  Log In with Google
-                </button>
-
-                <p>
-                  Don't have an account?{" "}
-                  <Link to="/signup" style={{ color: "blue" }}>
-                    {" "}
-                    Sign Up
-                  </Link>
-                </p>
               </Form>
+              <p className="text-center">Or</p>
+              <button className="gg_login" onClick={logInWithGoogle}>
+                <i
+                  class="ri-google-fill"
+                  style={{
+                    fontSize: "21px",
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginRight: "0.5em",
+                  }}
+                ></i>
+                Log In with Google
+              </button>
+              <p>
+                Don't have an account?{" "}
+                <Link to="/signup" style={{ color: "blue" }}>
+                  {" "}
+                  Sign Up
+                </Link>
+              </p>
             </Col>
           </Row>
         </Container>

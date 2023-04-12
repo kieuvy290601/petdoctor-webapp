@@ -4,6 +4,7 @@ import AddProduct from "../../pages/Admin/AddProduct/AddProduct";
 import AllProduct from "../../pages/Admin/AllProducts/AllProduct";
 import Dashboard from "../../pages/Admin/Dashboard/Dashboard";
 import Orders from "../../pages/Admin/Orders/Orders";
+import ManagerUers from "../../pages/Admin/ManagerUsers/ManagerUsers";
 
 const AdminRouter = () => {
   return (
@@ -12,6 +13,7 @@ const AdminRouter = () => {
       <Route path="allproduct" element={<AllProduct />} />
       <Route path="/addproduct" element={<AddProduct />} />
       <Route path="orders" element={<Orders />} />
+      <Route path="/users" element={<ManagerUers />} />
     </Routes>
   );
 };

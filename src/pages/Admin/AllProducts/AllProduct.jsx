@@ -7,6 +7,9 @@ import {
   Timestamp,
   addDoc,
   collection,
+  deleteDoc,
+  doc,
+  documentId,
   getDocs,
   orderBy,
   query,
@@ -82,6 +85,8 @@ const AllProduct = () => {
           where("prdName", "<=", searchTerm + "\uf8ff"),
           orderBy("prdName")
         );
+      } else {
+        q = query(prdList, orderBy("createAt", "desc"));
       }
 
       const querySnapshot = await getDocs(q);
@@ -144,10 +149,7 @@ const AllProduct = () => {
 
 
   const createData = async (e) => {
-    e.preventDefault();
-    // console.log(product);
-
-    
+    e.preventDefault();    
     if (
       !product.prdName ||
       !product.prdQuantity ||
@@ -159,7 +161,6 @@ const AllProduct = () => {
       toast.error("Please fill in all required fields");
       return;
     }
-
     try {
       const dataRef = addDoc(collection(db, "products"), {
         prdName: product.prdName,
@@ -182,6 +183,9 @@ const AllProduct = () => {
       toast.error(error.message);
     }
   };
+
+  const deletePrd = async (id, prdURL) => {
+  }
 
   return (
     <section>
@@ -422,6 +426,7 @@ const AllProduct = () => {
                     <i
                       className="ri-delete-bin-2-line"
                       style={{ color: "red" }}
+                      onClick={() => {deletePrd(product.id)}}
                     ></i>
                   </span>
                 </td>
@@ -444,6 +449,7 @@ const AllProduct = () => {
                     onClick={() => handlePageChange(i + 1)}
                   >
                     {i + 1}
+
                   </button>
                 </li>
               ))}

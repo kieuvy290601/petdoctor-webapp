@@ -6,6 +6,7 @@ import Loading from "../../components/Loading/Loading";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {
+  Timestamp,
   collection,
   doc,
   getDocs,
@@ -83,12 +84,13 @@ const Signup = () => {
         username: username,
         email,
         role: role,
+        createAt: Timestamp.now().toDate(),
       });
 
       //setLoading(true);
       console.log("Account created");
       toast.success("Account created");
-      navigate("/login");
+      navigate("/home");
     } catch (error) {
       //setLoading(false);
       console.log(error);

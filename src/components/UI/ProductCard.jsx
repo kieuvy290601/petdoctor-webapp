@@ -12,8 +12,6 @@
 
     const dispatch = useDispatch();
 
-    // const id = documentId();
-
     const { prdName } = item;
     const isMatch = prdName.toLowerCase().includes(searchInput.toLowerCase());
     

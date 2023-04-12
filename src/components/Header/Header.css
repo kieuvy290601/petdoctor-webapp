@@ -31,10 +31,10 @@
 .menu {
   display: flex;
   align-items: center;
-  column-gap: 2.7rem;
+  column-gap: 3.0rem;
   margin-bottom: 0;
   justify-content: space-between;
-
+  padding-left: 100px;
 }
 
 .nav_item {
@@ -49,6 +49,7 @@
   column-gap: 1.5rem;
   padding: 10px;
   width: 212px;
+  padding-left: 55px;
 }
 
 .nav_icons span i {
@@ -67,8 +68,8 @@
   font-weight: 700 !important;
 }
 
-.cart_icon,
-.fav_icon {
+.cart_icon
+{
   position: relative;
 }
 
