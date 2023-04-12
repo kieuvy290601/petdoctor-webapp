@@ -72,28 +72,33 @@ const AllProduct = () => {
       let q = prdList;
 
       if (selectedCategory !== "") {
-        q = query(prdList, where("prdCategory", "==", selectedCategory));
+        q = query(
+          prdList,
+          where("prdCategory", "==", selectedCategory),
+          orderBy("createAt", "desc")
+        );
       }
 
       if (selectedSubcategory !== "") {
-        q = query(q, where("prdSubCategory", "==", selectedSubcategory));
+        q = query(
+          q,
+          where("prdSubCategory", "==", selectedSubcategory),
+        );
       }
 
       if (searchTerm !== "") {
         q = query(
           prdList,
           where("prdName", ">=", searchTerm),
-          orderBy("prdName")
+          orderBy("prdName"),
         );
         // Add the following line to also search for products whose prdName field includes the search term:
         q = query(
           prdList,
           where("prdName", ">=", searchTerm),
           where("prdName", "<=", searchTerm + "\uf8ff"),
-          orderBy("prdName")
+          orderBy("prdName"),
         );
-      } else {
-        q = query(prdList, orderBy("createAt", "desc"));
       }
 
       const querySnapshot = await getDocs(q);
