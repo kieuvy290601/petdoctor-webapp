@@ -91,17 +91,20 @@ const Login = () => {
       .then((result) => {
         // The signed-in user info.
         const user = result.user;
-        // set the user role to "user"
-
+        // set the user role to "user
         const userRef = doc(db, "users", user.uid);
-        setDoc(userRef, { role: "user", displayName: user.displayName, email: user.email, photoUrl: user.photoURL, uid: user.uid }, { merge: true });
+        setDoc(
+          userRef,
+          {
+            role: "user",
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            uid: user.uid,
+          },
+          { merge: true }
+        );
 
-        // db.collection("users").doc(user.uid).set(
-        //   {
-        //     role: "user",
-        //   },
-        //   { merge: true }
-        // );
         toast.success("Login successfully");
         navigate("/home");
       })

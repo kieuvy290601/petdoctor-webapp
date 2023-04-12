@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import heroImg from "../.././assets/images/loginImg.png";
 import "../../styles/Signup.css";
 
+
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -81,7 +82,7 @@ const Signup = () => {
       }
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
-        username: username,
+        displayName: username,
         email,
         role: role,
         createAt: Timestamp.now().toDate(),

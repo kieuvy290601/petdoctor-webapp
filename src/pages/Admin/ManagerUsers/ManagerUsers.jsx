@@ -1,13 +1,30 @@
-import { Timestamp, addDoc, collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Col, Form } from "reactstrap";
 import { db, storage } from "../../../firebase.config";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+
+const PAGE_SIZE = 10;
 
 const ManagerUsers = () => {
   // TODO: Set show modal
@@ -16,8 +33,16 @@ const ManagerUsers = () => {
   const handleShow = () => setShow(true);
 
   const [users, setUsers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  
+
+  //Implement pagination
+
+  const totalPages = Math.ceil(users.length / PAGE_SIZE);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const currentData = users.slice(startIndex, endIndex);
+
   const initialState = {
     displayName: "",
     email: "",
@@ -62,11 +87,7 @@ const ManagerUsers = () => {
   const addUser = async (e) => {
     let role = "user";
     e.preventDefault();
-    if (
-      !user.displayName ||
-      !user.email ||
-      !user.photoURL
-    ) {
+    if (!user.displayName || !user.email || !user.photoURL) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -79,24 +100,21 @@ const ManagerUsers = () => {
         createAt: Timestamp.now().toDate(),
       });
       console.log(user.photoURL);
-      console.log(dataRef)
+      console.log(dataRef);
       setNewUser({ ...initialState });
       handleClose();
-      toast.success("Product added successfully.");
+      toast.success("User added successfully.");
       navigate("/admin/users");
     } catch (error) {
       toast.error(error.message);
     }
   };
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       // Fetch data from Firestore and update the state
       const userList = collection(db, "users");
       let u = userList;
-
 
       if (searchTerm !== "") {
         u = query(
@@ -111,16 +129,16 @@ const ManagerUsers = () => {
           where("displayName", "<=", searchTerm + "\uf8ff"),
           orderBy("displayName")
         );
-      } else {
-        u = query(userList, orderBy("createAt", "desc"));
       }
-
+      // else {
+      //   u = query(userList, orderBy("createAt", "desc"));
+      // }
 
       const querySnapshot = await getDocs(u);
       const data = querySnapshot.docs
         .filter((doc) => doc.data().role !== "admin")
-        .map((doc, index) => ({
-          id: index + 1,
+        .map((doc) => ({
+          uid: doc.id,
           ...doc.data(),
         }));
       setUsers(data);
@@ -128,11 +146,33 @@ const ManagerUsers = () => {
     fetchData();
   }, [searchTerm]);
 
-    const handleSearch = (e) => {
-      setSearchTerm(e.target.value);
-    };
+  const handlePageChange = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
 
-  
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+  const handleDelete = async (uid, photoURL) => {
+    try {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this user?"
+      );
+      if (!confirmed) {
+        return;
+      }
+      // Delete product document from Firestore
+      const deleteUser = doc(db, "users", uid);
+      await deleteDoc(deleteUser);
+
+      const imgRef = ref(storage, photoURL);
+      await deleteObject(imgRef);
+
+      toast.success("User deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
 
   return (
     <section>
@@ -244,16 +284,15 @@ const ManagerUsers = () => {
           </thead>
 
           <tbody className="tbody">
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
+            {currentData.map((user, index) => (
+              <tr key={startIndex + index}>
+                <td>{startIndex + index + 1}</td>
                 <td>{user.displayName}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>
                 <td>
-                  <img src={user.photoURL} alt="" style={{ width: "25%" }} />
+                  <img src={user.photoURL} alt="" style={{ width: "35%" }} />
                 </td>
-
                 <td className="action">
                   <span>
                     <i
@@ -268,6 +307,7 @@ const ManagerUsers = () => {
                     <i
                       className="ri-delete-bin-2-line"
                       style={{ color: "red" }}
+                      onClick={() => handleDelete(user.uid, user.photoURL)}
                     ></i>
                   </span>
                 </td>
@@ -275,6 +315,27 @@ const ManagerUsers = () => {
             ))}
           </tbody>
         </Table>
+        <nav>
+          <div className="pagination-container">
+            <ul className="pagination">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <li
+                  key={i}
+                  className={`page-item ${
+                    currentPage === i + 1 ? "active" : ""
+                  }`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
       </section>
     </section>
   );

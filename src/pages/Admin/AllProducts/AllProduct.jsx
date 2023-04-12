@@ -9,14 +9,18 @@ import {
   collection,
   deleteDoc,
   doc,
-  documentId,
   getDocs,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useNavigate } from "react-router-dom";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Col, Form } from "reactstrap";
 import { db, storage } from "../../../firebase.config";
@@ -43,6 +47,7 @@ const AllProduct = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+
   const initialState = {
     prdName: "",
     prdPrice: 0,
@@ -58,6 +63,7 @@ const AllProduct = () => {
   const [product, setProduct] = useState({
     ...initialState,
   });
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,7 +133,6 @@ const AllProduct = () => {
       }
     );
   };
-  
 
   const handlePageChange = (pageNum) => {
     setCurrentPage(pageNum);
@@ -147,9 +152,8 @@ const AllProduct = () => {
 
   const navigate = useNavigate();
 
-
   const createData = async (e) => {
-    e.preventDefault();    
+    e.preventDefault();
     if (
       !product.prdName ||
       !product.prdQuantity ||
@@ -184,8 +188,29 @@ const AllProduct = () => {
     }
   };
 
-  const deletePrd = async (id, prdURL) => {
-  }
+  const handleDelete = async (prdId, prdURL) => {
+    try {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this product?"
+      );
+      if (!confirmed) {
+        return;
+      }
+      // Delete product document from Firestore
+      const deletePrd = doc(db, "products", prdId);
+      await deleteDoc(deletePrd);
+
+      const imgRef = ref(storage, prdURL);
+      await deleteObject(imgRef);
+
+      toast.success("Product deleted successfully.");
+      
+    
+      
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
 
   return (
     <section>
@@ -298,7 +323,7 @@ const AllProduct = () => {
                       <textarea
                         className="form-control"
                         style={{ backgroundColor: "#dde3e6" }}
-                        placeholder="Enter description here"                        
+                        placeholder="Enter description here"
                         rows="2"
                         name="prdShortDesc"
                         value={product.prdShortDesc}
@@ -344,9 +369,7 @@ const AllProduct = () => {
                         Add
                       </button>
                     </div>
-                    
                   </Form>
-                  
                 </div>
               </Modal.Body>
             </Modal>
@@ -398,6 +421,7 @@ const AllProduct = () => {
               <th>#</th>
               <th className="th-name">Product Name</th>
               <th>Price</th>
+              <th>Quantity</th>
               <th>Category</th>
               <th>Subcategory</th>
               <th className="th-action">Actions</th>
@@ -410,6 +434,7 @@ const AllProduct = () => {
                 <td>{startIndex + index + 1}</td>
                 <td>{item.prdName}</td>
                 <td>${item.prdPrice}</td>
+                <td>{item.prdQuantity}</td>
                 <td>{item.prdCategory}</td>
                 <td>{item.prdSubCategory}</td>
                 <td className="action">
@@ -426,7 +451,7 @@ const AllProduct = () => {
                     <i
                       className="ri-delete-bin-2-line"
                       style={{ color: "red" }}
-                      onClick={() => {deletePrd(product.id)}}
+                      onClick={() => handleDelete(item.prdId, item.prdURL)}
                     ></i>
                   </span>
                 </td>
@@ -449,7 +474,6 @@ const AllProduct = () => {
                     onClick={() => handlePageChange(i + 1)}
                   >
                     {i + 1}
-
                   </button>
                 </li>
               ))}
