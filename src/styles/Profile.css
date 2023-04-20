@@ -1,8 +1,8 @@
-body {
+/* body {
   margin-top: 20px;
   background-color: #f2f6fc;
   color: #69707a;
-}
+} */
 .img-account-profile {
   height: 10rem;
 }
@@ -59,4 +59,21 @@ body {
   padding-right: 0;
   margin-left: 1rem;
   margin-right: 1rem;
+}
+
+.link_active {
+  font-weight: 700 !important;
+  color: #e67635;
+  
+}
+
+.links {
+  width: max-content;
+  padding: 0px;
+}
+
+.link li {
+  padding: 20px 40px;
+  background-color: #dde3e6;
+
 }

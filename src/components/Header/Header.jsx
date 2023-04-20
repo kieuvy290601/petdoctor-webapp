@@ -29,7 +29,7 @@ const Header = () => {
   const auth = getAuth();
   const headerRef = useRef(null);
   const dispatch = useDispatch();
-  // const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
   const [displayName, setDisplayName] = useState("");
   const [showOptions, setShowOptions] = useState(false);
@@ -38,8 +38,8 @@ const Header = () => {
     window.addEventListener("scroll", () => {
       if (!headerRef.current) return;
       if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
+        document.body.scrollTop > 0 ||
+        document.documentElement.scrollTop > 0
       ) {
         headerRef.current.classList.add("sticky_header");
       } else {
@@ -75,7 +75,6 @@ const Header = () => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         console.log(user);
-
         console.log(user.displayName);
         if (user.displayName === null) {
           const u1 = user.email.substring(0, user.email.indexOf("@"));
@@ -170,7 +169,7 @@ const Header = () => {
               <div className="nav_icons">
                 <span className="cart_icon" onClick={navigateToCart}>
                   <i class="ri-shopping-cart-line"></i>
-                  <span className="badge"></span>
+                  <span className="badge">{totalQuantity}</span>
                 </span>
                 <div
                   className="username"
@@ -184,6 +183,7 @@ const Header = () => {
                   {showOptions && (
                     <div className="options">
                       <div onClick={() => navigate("/profile")}>Profile</div>
+                      <div onClick={() => navigate("/orderhistory")}>Order History</div>
                       <div onClick={handleLogout}>Logout</div>
                     </div>
                   )}

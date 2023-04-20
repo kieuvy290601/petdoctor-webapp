@@ -3,8 +3,6 @@ import { selectIsLoggedIn } from "../redux/slices/authSlice"
 
 
 
-
-
 const AfterLoggedIn = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
 

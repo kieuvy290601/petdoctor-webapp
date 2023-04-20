@@ -14,7 +14,7 @@ const DogPharm = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
@@ -136,9 +136,9 @@ const DogPharm = () => {
                 <h4>No products are found!</h4>
               </div>
             ) : (
-              currentProducts.map((item) => (
+              currentProducts.map((item, index) => (
                 <ProductCard
-                  key={item.id}
+                  key={index}
                   item={item}
                   searchInput={searchInput}
                   prdId={item.prdId}

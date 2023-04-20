@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
+import AccessDenied from "../pages/AccessDenied";
 import AddProduct from "../pages/Admin/AddProduct/AddProduct.jsx";
 import Login from "../pages/Auth/Login";
 import ResetPassword from "../pages/Auth/ResetPassword";
@@ -25,7 +26,15 @@ const Routers = () => {
       <Route path="login" element={<Login />} />
       <Route path="resetpassword" element={<ResetPassword />} />
       <Route path="home" element={<Home />} />
-      <Route path="checkout" element={<Checkout />} />
+      <Route path="accessdenied" element={<AccessDenied />} />
+      <Route
+        path="checkout"
+        element={
+          <ProtectedRoute>
+            <Checkout />
+          </ProtectedRoute>
+        }
+      />
       <Route path="productdetail/:prdId" element={<ProductDetail />} />
       <Route
         path="profile"
@@ -38,7 +47,15 @@ const Routers = () => {
 
       <Route path="dogshop" element={<DogShop />} />
       <Route path="catshop" element={<CatShop />} />
-      <Route path="cart" element={<Cart />} />
+
+      <Route
+        path="cart"
+        element={
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/admin/*"
         element={

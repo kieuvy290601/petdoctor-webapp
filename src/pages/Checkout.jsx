@@ -19,10 +19,20 @@ const Cart = () => {
   // TODO: Set show payment options
   const [selectedOption, setSelectedOption] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const [shippingOption, setShippingOption] = useState(null);
   const handleRadioClick = (event) => {
     setSelectedOption(event.target.value);
     setShowDropdown(true);
+  };
+
+  const getTotalAmount = () => {
+    if (shippingOption === "Regular") {
+      return totalAmount + 6.75; // add $5 for standard shipping
+    } else if (shippingOption === "Express") {
+      return totalAmount + 18.50; // add $10 for express shipping
+    } else {
+      return totalAmount; // no shipping selected
+    }
   };
 
   // TODO: Set show shipping method
@@ -223,6 +233,8 @@ const Cart = () => {
                         <input
                           type="radio"
                           value="Freeship"
+                          checked={shippingOption === "Freeship"}
+                          onChange={() => setShippingOption("Freeship")}
                           name="shipping"
                           style={{ marginRight: "10px" }}
                         />{" "}
@@ -236,6 +248,8 @@ const Cart = () => {
                         <input
                           type="radio"
                           value="Regular"
+                          checked={shippingOption === "Regular"}
+                          onChange={() => setShippingOption("Regular")}
                           name="shipping"
                           style={{ marginRight: "10px" }}
                         />{" "}
@@ -249,6 +263,8 @@ const Cart = () => {
                         <input
                           type="radio"
                           value="Express"
+                          checked={shippingOption === "Express"}
+                          onChange={() => setShippingOption("Express")}
                           name="shipping"
                           style={{ marginRight: "10px" }}
                         />{" "}
@@ -405,9 +421,10 @@ const Cart = () => {
 
               <div className=" grand-total ">
                 <h6>Grand Total</h6>
-                <span className="price">${totalQuantity}</span>
+                <span className="price">${getTotalAmount()}</span>
               </div>
               <button className="checkout">Proceed to Checkout</button>
+              <button className="goback mt-3">Go back to Cart</button>
             </div>
           </div>
         </div>

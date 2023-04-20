@@ -16,6 +16,7 @@ import { Container, Row } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import { db } from "../firebase.config";
 import { cartActions } from "../redux/slices/cartSlice";
+import AfterLoggedIn from "../route/AuthenRoute";
 import "../styles/ProductDetail.css";
 
 const ProductDetail = () => {
@@ -71,7 +72,6 @@ const ProductDetail = () => {
       })
     );
     toast.success("Added to cart successfully");
-    
   };
 
   return (
@@ -141,14 +141,15 @@ const ProductDetail = () => {
                     {item.prdQuantity} &nbsp;products available
                   </span>
                 </div>
-
-                <motion.button
-                  whileTap={{ scale: 1.1 }}
-                  className="buy_btn"
-                  onClick={addtoCart}
-                >
-                  Add to cart
-                </motion.button>
+                <AfterLoggedIn>
+                  <motion.button
+                    whileTap={{ scale: 1.1 }}
+                    className="buy_btn"
+                    onClick={addtoCart}
+                  >
+                    Add to cart
+                  </motion.button>
+                </AfterLoggedIn>
               </div>
             </div>
           </Row>
@@ -359,12 +360,14 @@ const ProductDetail = () => {
                         </div>
                         <div className="product_card-bottom">
                           <span className="price">${product.prdPrice}</span>
-                          <motion.span
-                            whileTap={{ scale: 1.2 }}
-                            onClick={addtoCart}
-                          >
-                            <i class="ri-add-line"></i>
-                          </motion.span>
+                          <AfterLoggedIn>
+                            <motion.span
+                              whileTap={{ scale: 1.2 }}
+                              onClick={addtoCart}
+                            >
+                              <i class="ri-add-line"></i>
+                            </motion.span>
+                          </AfterLoggedIn>
                         </div>
                       </div>
                     </div>

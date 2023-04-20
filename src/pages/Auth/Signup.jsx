@@ -90,7 +90,8 @@ const Signup = () => {
 
       //setLoading(true);
       console.log("Account created");
-      toast.success("Account created");
+      console.log(user)
+    toast.success("Account created");
       navigate("/home");
     } catch (error) {
       //setLoading(false);

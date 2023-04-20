@@ -6,6 +6,7 @@ import cartSlice from "./slices/cartSlice";
 const rootReducer = combineReducers(
   {
     auth: authSlice,
+    cart: cartSlice,
   }
 );
 
