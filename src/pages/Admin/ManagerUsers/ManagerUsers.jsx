@@ -28,13 +28,14 @@ const PAGE_SIZE = 10;
 
 const ManagerUsers = () => {
   // TODO: Set show modal
-  const [show, setShow] = useState(false); 
+  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
 
   //Implement pagination
 
@@ -82,7 +83,6 @@ const ManagerUsers = () => {
     );
   };
 
-
   const navigate = useNavigate();
 
   const addUser = async (e) => {
@@ -92,6 +92,7 @@ const ManagerUsers = () => {
       toast.error("Please fill in all required fields");
       return;
     }
+
     try {
       const dataRef = addDoc(collection(db, "users"), {
         displayName: user.displayName,
@@ -100,8 +101,19 @@ const ManagerUsers = () => {
         role: role,
         createAt: Timestamp.now().toDate(),
       });
-      console.log(user.photoURL);
-      console.log(dataRef);
+
+      // Fetch updated list of users from Firestore and update state
+      const querySnapshot = await getDocs(
+        query(collection(db, "users"), orderBy("createAt", "desc"))
+      );
+      const data = querySnapshot.docs
+        .filter((doc) => doc.data().role !== "admin")
+        .map((doc) => ({
+          uid: doc.id,
+          ...doc.data(),
+        }));
+      setUsers(data);
+
       setNewUser({ ...initialState });
       handleClose();
       toast.success("User added successfully.");
@@ -130,8 +142,7 @@ const ManagerUsers = () => {
           where("displayName", "<=", searchTerm + "\uf8ff"),
           orderBy("displayName")
         );
-      }
-      else {
+      } else {
         u = query(userList, orderBy("createAt", "desc"));
       }
 
@@ -143,6 +154,7 @@ const ManagerUsers = () => {
           ...doc.data(),
         }));
       setUsers(data);
+      setSelectedUser(null);
     };
     fetchData();
   }, [searchTerm]);
@@ -168,6 +180,18 @@ const ManagerUsers = () => {
 
       const imgRef = ref(storage, photoURL);
       await deleteObject(imgRef);
+
+      // Fetch updated list of users from Firestore and update state
+      const querySnapshot = await getDocs(
+        query(collection(db, "users"), orderBy("createAt", "desc"))
+      );
+      const data = querySnapshot.docs
+        .filter((doc) => doc.data().role !== "admin")
+        .map((doc) => ({
+          uid: doc.id,
+          ...doc.data(),
+        }));
+      setUsers(data);
 
       toast.success("User deleted successfully.");
     } catch (error) {
@@ -272,8 +296,6 @@ const ManagerUsers = () => {
             </div>
           </Col>
         </div>
-        
-
         <Table striped bordered hover>
           <thead className="thead">
             <tr>
@@ -288,7 +310,11 @@ const ManagerUsers = () => {
 
           <tbody className="tbody">
             {currentData.map((user, index) => (
-              <tr key={startIndex + index}>
+              <tr
+                // key={startIndex + index}
+                key={user.uid}
+                onClick={() => setSelectedUser(user)}
+              >
                 <td>{startIndex + index + 1}</td>
                 <td>{user.displayName}</td>
                 <td>{user.email}</td>
@@ -297,12 +323,6 @@ const ManagerUsers = () => {
                   <img src={user.photoURL} alt="" style={{ width: "35%" }} />
                 </td>
                 <td className="action">
-                  <span>
-                    <i
-                      className="ri-edit-2-line"
-                      style={{ color: "#7bbb1a" }}
-                    ></i>
-                  </span>
                   <span>
                     <i
                       className="ri-delete-bin-2-line"

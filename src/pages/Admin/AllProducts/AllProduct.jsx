@@ -12,18 +12,22 @@ import {
   getDocs,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import {
   deleteObject,
   getDownloadURL,
+  getMetadata,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Col, Form } from "reactstrap";
 import { db, storage } from "../../../firebase.config";
+import { storeProducts } from "../../../redux/slices/productSlice";
 import "./AllProduct.css";
 
 const PAGE_SIZE = 10;
@@ -36,6 +40,25 @@ const AllProduct = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const handleProductEdit = (product) => {
+    setSelectedProduct(product);
+    setProduct({
+      prdName: product.prdName,
+      prdPrice: product.prdPrice,
+      prdQuantity: product.prdQuantity,
+      prdCategory: product.prdCategory,
+      prdSubCategory: product.prdSubCategory,
+      prdDesc: product.prdDesc,
+      prdShortDesc: product.prdShortDesc,
+      prdDirection: product.prdDirection,
+      prdURL: product.prdURL,
+    });
+    setShowEdit(true);
+      setProduct({ ...initialState });
+
+  };
+
+  const dispatch = useDispatch();
   //Implement pagination
 
   const totalPages = Math.ceil(data.length / PAGE_SIZE);
@@ -46,9 +69,16 @@ const AllProduct = () => {
   // TODO: Set show modal
   const [show, setShow] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const handleCloseDetail = () => setShowDetail(false);
+  const handleCloseEdit = () => setShowEdit(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  // const handleCloseEdit = () => {
+  //   setShowEdit(false);
+  //   setSelectedProduct(null);
+  // };
 
   const initialState = {
     prdName: "",
@@ -80,24 +110,21 @@ const AllProduct = () => {
       }
 
       if (selectedSubcategory !== "") {
-        q = query(
-          q,
-          where("prdSubCategory", "==", selectedSubcategory),
-        );
+        q = query(q, where("prdSubCategory", "==", selectedSubcategory));
       }
 
       if (searchTerm !== "") {
         q = query(
           prdList,
           where("prdName", ">=", searchTerm),
-          orderBy("prdName"),
+          orderBy("prdName")
         );
         // Add the following line to also search for products whose prdName field includes the search term:
         q = query(
           prdList,
           where("prdName", ">=", searchTerm),
           where("prdName", "<=", searchTerm + "\uf8ff"),
-          orderBy("prdName"),
+          orderBy("prdName")
         );
       }
 
@@ -107,6 +134,11 @@ const AllProduct = () => {
         ...doc.data(),
       }));
       setData(data);
+      dispatch(
+        storeProducts({
+          product: data,
+        })
+      );
     };
     fetchData();
   }, [selectedCategory, selectedSubcategory, searchTerm]);
@@ -140,8 +172,8 @@ const AllProduct = () => {
     );
   };
 
-  const handleProductSelect = (item) => {
-    setSelectedProduct(item);
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
     setShowDetail(true);
   };
 
@@ -190,10 +222,69 @@ const AllProduct = () => {
         createAt: Timestamp.now().toDate(),
       });
       console.log(product.prdURL);
+
+      // Fetch updated list of users from Firestore and update state
+      const querySnapshot = await getDocs(
+        query(collection(db, "products"), orderBy("createAt", "desc"))
+      );
+      const data = querySnapshot.docs
+        .map((doc) => ({
+          uid: doc.id,
+          ...doc.data(),
+        }));
+      setData(data);
+
       setProduct({ ...initialState });
       handleClose();
       toast.success("Product added successfully.");
       navigate("/admin/allproduct");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+
+    // if (product.prdURL !== selectedProduct.prdURL) {
+    //   const storageRef = ref(storage, selectedProduct.prdURL);
+    //   deleteObject(storageRef);
+    // }
+    if (product.prdURL !== selectedProduct.prdURL) {
+      const storageRef = ref(storage, selectedProduct.prdURL);
+      getMetadata(storageRef)
+        .then((metadata) => {
+          if (metadata.exists()) {
+            deleteObject(storageRef);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    try {
+      await updateDoc(doc(db, "products", selectedProduct.prdId), {
+        prdName: selectedProduct.prdName,
+        prdPrice: Number(selectedProduct.prdPrice),
+        prdQuantity: Number(selectedProduct.prdQuantity),
+        prdCategory: selectedProduct.prdCategory,
+        prdSubCategory: selectedProduct.prdSubCategory,
+        prdDesc: selectedProduct.prdDesc,
+        prdShortDesc: selectedProduct.prdShortDesc,
+        prdDirection: selectedProduct.prdDirection,
+        prdURL: product.prdURL,
+      });
+      toast.success("User updated successfully.");
+      // Fetch updated list of users from Firestore and update state
+      const querySnapshot = await getDocs(
+        query(collection(db, "products"), orderBy("createAt", "desc"))
+      );
+      const data = querySnapshot.docs.map((doc) => ({
+        uid: doc.id,
+        ...doc.data(),
+      }));
+      setData(data);
+      handleCloseEdit();
     } catch (error) {
       toast.error(error.message);
     }
@@ -213,6 +304,16 @@ const AllProduct = () => {
 
       const imgRef = ref(storage, prdURL);
       await deleteObject(imgRef);
+
+      // Fetch updated list of users from Firestore and update state
+      const querySnapshot = await getDocs(
+        query(collection(db, "products"), orderBy("createAt", "desc"))
+      );
+      const data = querySnapshot.docs.map((doc) => ({
+        uid: doc.id,
+        ...doc.data(),
+      }));
+      setData(data);
 
       toast.success("Product deleted successfully.");
     } catch (error) {
@@ -237,7 +338,9 @@ const AllProduct = () => {
                 <Modal.Title>Add new product</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <p style={{ paddingLeft: 18 }}>* Indicates a required field</p>
+                <p style={{ paddingLeft: 18, color: "red" }}>
+                  * Indicates a required field
+                </p>
                 <div style={{ padding: 20 }}>
                   <Form onSubmit={createData}>
                     <div className="col-md-6">
@@ -429,55 +532,55 @@ const AllProduct = () => {
           </Modal.Header>
           <Modal.Body>
             <div className="detail-modal-container">
-            <div className="detail-modal">
-              <div className="col-md-12 d-flex">
-                <div className="product-detail col-md-4">
-                  <h6>Product Price:</h6>
-                  <input disabled value={"$" + selectedProduct?.prdPrice} />
+              <div className="detail-modal">
+                <div className="col-md-12 d-flex">
+                  <div className="product-detail col-md-4">
+                    <h6>Product Price:</h6>
+                    <input disabled value={"$" + selectedProduct?.prdPrice} />
+                  </div>
+                  <div className="product-detail col-md-4">
+                    <h6>Available Quantity: </h6>
+                    <input disabled value={selectedProduct?.prdQuantity} />
+                  </div>
                 </div>
-                <div className="product-detail col-md-4">
-                  <h6>Available Quantity: </h6>
-                  <input disabled value={selectedProduct?.prdQuantity} />
+                <div className="col-md-12 d-flex">
+                  <div className="product-detail col-md-4">
+                    <h6>Category: </h6>
+                    <input disabled value={selectedProduct?.prdCategory} />
+                  </div>
+                  <div className="product-detail col-md-4">
+                    <h6>Subcategory </h6>
+                    <input disabled value={selectedProduct?.prdSubCategory} />
+                  </div>
+                </div>
+                <div className="col-md-12 d-flex">
+                  <div className="product-detail col-md-12">
+                    <h6>Short Description: </h6>
+                    <input
+                      style={{ width: "87%" }}
+                      disabled
+                      value={selectedProduct?.prdShortDesc}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-12 d-flex">
+                  <div className="product-detail">
+                    <h6>Description: </h6>
+                    <pre style={{ width: "100%", height: "auto" }}>
+                      {selectedProduct?.prdDesc}
+                    </pre>
+                  </div>
+                </div>
+                <div className="col-md-12 d-flex">
+                  <div className="product-detail">
+                    <h6>Direction: </h6>
+                    <pre style={{ width: "100%", height: "auto" }}>
+                      {selectedProduct?.prdDirection}
+                    </pre>
+                  </div>
                 </div>
               </div>
-              <div className="col-md-12 d-flex">
-                <div className="product-detail col-md-4">
-                  <h6>Category: </h6>
-                  <input disabled value={selectedProduct?.prdCategory} />
-                </div>
-                <div className="product-detail col-md-4">
-                  <h6>Subcategory </h6>
-                  <input disabled value={selectedProduct?.prdSubCategory} />
-                </div>
-              </div>
-              <div className="col-md-12 d-flex">
-                <div className="product-detail col-md-12">
-                  <h6>Short Description: </h6>
-                  <input
-                    style={{ width: "87%" }}
-                    disabled
-                    value={selectedProduct?.prdShortDesc}
-                  />
-                </div>
-              </div>
-              <div className="col-md-12 d-flex">
-                <div className="product-detail">
-                  <h6>Description: </h6>
-                  <pre style={{ width: "100%", height: "auto" }}>
-                    {selectedProduct?.prdDesc}
-                  </pre>
-                </div>
-              </div>
-              <div className="col-md-12 d-flex">
-                <div className="product-detail">
-                  <h6>Direction: </h6>
-                  <pre style={{ width: "100%", height: "auto" }}>
-                    {selectedProduct?.prdDirection}
-                  </pre>
-                </div>
-              </div>              
-              </div>
-              </div>
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseDetail}>
@@ -485,6 +588,194 @@ const AllProduct = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Modal size="lg" show={showEdit} onHide={handleCloseEdit}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Product</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedProduct && (
+              <Form onSubmit={handleEditUser}>
+                <div className="detail-modal-container">
+                  <div className="detail-modal">
+                    <div className="col-md-12 d-flex">
+                      <div className="product-detail col-md-12">
+                        <h6>Product Name: </h6>
+                        <input
+                          type="text"
+                          value={selectedProduct.prdName}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12 d-flex">
+                      <div className="product-detail col-md-4">
+                        <h6>Product Price:</h6>
+                        <input
+                          type="text"
+                          value={selectedProduct.prdPrice}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdPrice: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="product-detail col-md-4">
+                        <h6>Available Quantity: </h6>
+                        <input
+                          type="text"
+                          value={selectedProduct.prdQuantity}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdQuantity: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12 d-flex">
+                      <div className="product-detail col-md-4">
+                        <h6>Category: </h6>
+                        <select
+                          className="form-select-edit"
+                          name="prdCategory"
+                          value={selectedProduct.prdCategory}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdCategory: e.target.value,
+                            })
+                          }
+                        >
+                          <option>Choose category</option>
+                          <option value="Dog">Dog</option>
+                          <option value="Cat">Cat</option>
+                        </select>
+                      </div>
+                      <div className="product-detail col-md-4">
+                        <h6>Subcategory </h6>
+                        <select
+                          className="form-select-edit"
+                          value={selectedProduct.prdSubCategory}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdSubCategory: e.target.value,
+                            })
+                          }
+                        >
+                          <option>Choose subcategory</option>
+                          <option value="Vaccine">Vaccine</option>
+                          <option value="Medicine">Medicine</option>
+                          <option value="Food">Food</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-12 d-flex">
+                      <div className="product-detail" style={{ width: "100%" }}>
+                        <h6>Short Description: </h6>
+                        <textarea
+                          style={{ width: "100%" }}
+                          type="text"
+                          rows="2"
+                          value={selectedProduct.prdShortDesc}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdShortDesc: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12 d-flex">
+                      <div className="product-detail" style={{ width: "100%" }}>
+                        <h6>Description: </h6>
+                        <textarea
+                          style={{ width: "100%", height: "auto" }}
+                          type="text"
+                          rows="4"
+                          value={selectedProduct.prdDesc}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdDesc: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12 d-flex">
+                      <div className="product-detail" style={{ width: "100%" }}>
+                        <h6>Direction: </h6>
+                        <textarea
+                          style={{ width: "100%", height: "auto" }}
+                          type="text"
+                          rows="4"
+                          value={selectedProduct.prdDirection}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdDirection: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12 d-flex">
+                      <div className="product-detail" style={{ width: "100%" }}>
+                        <label>Product URL:</label>
+                        <input
+                          style={{ width: "100%" }}
+                          type="text"
+                          value={selectedProduct.prdURL}
+                          onChange={(e) =>
+                            setSelectedProduct({
+                              ...selectedProduct,
+                              prdURL: e.target.value,
+                            })
+                          }
+                        />
+                        <input
+                          style={{ width: "100%" }}
+                          type="file"
+                          accept="image/*"
+                          name="photoURL"
+                          onChange={(e) => handleURLChange(e)}
+                          className="form-control"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="form-group d-flex mt-3"
+                      style={{ justifyContent: "flex-end", paddingRight: "6%" }}
+                    >
+                      <button
+                        type="button"
+                        className="btn_cancel text-white btn-rounded"
+                        onClick={handleCloseEdit}
+                      >
+                        Cancel
+                      </button>
+                      <button type="submit" className="btn_add text-white">
+                        Update data
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Modal.Body>
+        </Modal>
+
         <Table striped bordered hover>
           <thead className="thead">
             <tr>
@@ -499,32 +790,35 @@ const AllProduct = () => {
           </thead>
 
           <tbody className="tbody">
-            {currentData.map((item, index) => (
+            {currentData.map((product, index) => (
               <tr key={startIndex + index}>
                 <td>{startIndex + index + 1}</td>
-                <td>{item.prdName}</td>
-                <td>${item.prdPrice}</td>
-                <td>{item.prdQuantity}</td>
-                <td>{item.prdCategory}</td>
-                <td>{item.prdSubCategory}</td>
+                <td>{product.prdName}</td>
+                <td>${product.prdPrice}</td>
+                <td>{product.prdQuantity}</td>
+                <td>{product.prdCategory}</td>
+                <td>{product.prdSubCategory}</td>
                 <td className="action">
                   <span>
                     <i
                       className="ri-edit-2-line"
                       style={{ color: "#7bbb1a" }}
+                      onClick={() => handleProductEdit(product)}
                     ></i>
                   </span>
                   <span>
                     <i
                       className="ri-eye-line"
-                      onClick={() => handleProductSelect(item)}
+                      onClick={() => handleProductSelect(product)}
                     ></i>
                   </span>
                   <span>
                     <i
                       className="ri-delete-bin-2-line"
                       style={{ color: "red" }}
-                      onClick={() => handleDelete(item.prdId, item.prdURL)}
+                      onClick={() =>
+                        handleDelete(product.prdId, product.prdURL)
+                      }
                     ></i>
                   </span>
                 </td>

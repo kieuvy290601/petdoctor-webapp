@@ -74,7 +74,7 @@ const Header = () => {
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log(user);
+        console.log(user); 
         console.log(user.displayName);
         if (user.displayName === null) {
           const u1 = user.email.substring(0, user.email.indexOf("@"));
