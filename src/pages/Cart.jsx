@@ -40,14 +40,17 @@ const Cart = () => {
                   <tbody className="tbody">
                     {cartItems.map((item, index) => (
                       <tr key={item.prdId}>
-                        <td>
+                        <td className="pl-1">
                           <img
                             src={item.prdURL}
                             alt=""
                             style={{ width: "35%" }}
                           />
                         </td>
-                        <td>{item.prdName}</td>
+                        <td className="pl-1" style={{ width: "33%" }}>
+                          {item.prdName}
+                        </td>
+
                         {/* <td>
                           <a href="#" className="p-3">
                             -
@@ -57,7 +60,7 @@ const Cart = () => {
                             +
                           </a>
                         </td> */}
-                        <td>
+                        <td className="pl-1">
                           <button
                             className="px-2 mx-2"
                             style={{
@@ -86,12 +89,27 @@ const Cart = () => {
                             +
                           </button>
                         </td>
-                        <td>{(item.prdPrice * item.quantity).toFixed(2)}</td>
-                        <td>
+                        <td className="pl-1">
+                          {(item.prdPrice * item.quantity).toFixed(2)}
+                        </td>
+                        {/* <td>
                           <motion.span whileTap={{ scale: 0.9 }}>
                             <i
                               className="ri-delete-bin-2-line"
                               style={{ color: "red" }}
+                            ></i>
+                          </motion.span>
+                        </td> */}
+                        <td className="pl-1">
+                          <motion.span whileTap={{ scale: 0.9 }}>
+                            <i
+                              className="ri-delete-bin-2-line"
+                              style={{ color: "red", cursor: "pointer" }}
+                              onClick={() =>
+                                dispatch(
+                                  cartActions.removeItemFromCart(item.prdId)
+                                )
+                              }
                             ></i>
                           </motion.span>
                         </td>
