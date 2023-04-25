@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import momo from "../assets/images/momo.png";
 import visa from "../assets/images/visa.png";
 import zalo from "../assets/images/zalo.png";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   // TODO: Set show modal
@@ -26,13 +27,23 @@ const Cart = () => {
   };
 
   const getTotalAmount = () => {
+    let shippingCost = 0;
     if (shippingOption === "Regular") {
-      return totalAmount + 6.75; // add $5 for standard shipping
+      shippingCost = 6.75; // add $5 for standard shipping
     } else if (shippingOption === "Express") {
-      return totalAmount + 18.50; // add $10 for express shipping
-    } else {
-      return totalAmount; // no shipping selected
+      shippingCost = 18.5; // add $10 for express shipping
     }
+
+    const total = (totalAmount + shippingCost).toFixed(2); // round to 2 decimal places
+
+    return total;
+    // if (shippingOption === "Regular") {
+    //   return totalAmount + 6.75; // add $5 for standard shipping
+    // } else if (shippingOption === "Express") {
+    //   return totalAmount + 18.5; // add $10 for express shipping
+    // } else {
+    //   return totalAmount; // no shipping selected
+    // }
   };
 
   // TODO: Set show shipping method
@@ -423,8 +434,12 @@ const Cart = () => {
                 <h6>Grand Total</h6>
                 <span className="price">${getTotalAmount()}</span>
               </div>
-              <button className="checkout">Proceed to Checkout</button>
-              <button className="goback mt-3">Go back to Cart</button>
+              <Link to={`/checkout/`}>
+                <button className="checkout">Proceed to Checkout</button>
+              </Link>
+              <Link to={`/cart`}>
+                <button className="goback mt-3">Go back to Cart</button>
+              </Link>
             </div>
           </div>
         </div>
