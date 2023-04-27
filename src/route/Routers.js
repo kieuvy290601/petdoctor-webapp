@@ -8,6 +8,7 @@ import Signup from "../pages/Auth/Signup";
 import Cart from "../pages/Cart";
 import CatShop from "../pages/CatShop";
 import OrderHistory from "../pages/OrderHistory";
+import OrderDetail from "../pages/OrderDetail";
 import Checkout from "../pages/Checkout/Checkout";
 import Payment from "../pages/Checkout/Payment";
 import PaymentSuccess from "../pages/Checkout/PaymentSuccess";
@@ -80,6 +81,14 @@ const Routers = () => {
         element={
           <ProtectedRoute>
             <OrderHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="orderdetail/:orderId"
+        element={
+          <ProtectedRoute>
+            <OrderDetail />
           </ProtectedRoute>
         }
       />

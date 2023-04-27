@@ -15,6 +15,7 @@ import { cartActions, selectCartItems } from "../../redux/slices/cartSlice";
 import { selectShippingAddress } from "../../redux/slices/checkoutSlice";
 import CheckoutSummary from "./CheckoutSummary";
 
+
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
@@ -27,6 +28,7 @@ const PaymentForm = () => {
   const userEmail = useSelector(selectEmail);
   const cartItems = useSelector(selectCartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const shippingFee = useSelector((state) => state.cart.shippingFee);
   const shippingAddress = useSelector(selectShippingAddress);
 
   const dispatch = useDispatch();
@@ -59,6 +61,7 @@ const PaymentForm = () => {
       orderStatus: "Order Placed...",
       cartItems,
       shippingAddress,
+      shippingFee,
       createdAt: Timestamp.now().toDate(),
     };
     try {

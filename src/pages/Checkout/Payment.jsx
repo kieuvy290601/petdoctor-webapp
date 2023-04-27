@@ -30,7 +30,7 @@ const Payment = () => {
         userEmail: emailAddress,
         shipping: shippingAddress,
         description,
-        amount: parseInt(shippingFee),
+        shippingFee: shippingFee,
       }),
     })
       .then((res) => {
