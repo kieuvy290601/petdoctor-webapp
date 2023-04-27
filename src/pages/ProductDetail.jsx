@@ -24,7 +24,6 @@ const ProductDetail = () => {
   const { prdId } = useParams(); // retrieve prdId parameter from the URL
   const [item, setItem] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -121,19 +120,26 @@ const ProductDetail = () => {
                 >
                   <p className="desc">Quantity:&nbsp;</p>
 
-                  <div
+                  {/* <div
                     className="col mx-4 "
                     style={{ border: "1px solid", paddingLeft: 4 }}
                   >
-                    <a href="#">-</a>
-                    <a href="#" className="quantity">
-                      1
+                    <a href="#" onClick={incrementQuantity}>
+                      -
+                    </a>
+                    <a
+                      href="#"
+                      onClick={decrementQuantity}
+                      className="quantity"
+                    >
+                      {quantity}
                     </a>
                     <a href="#">+</a>
-                  </div>
+                  </div> */}
+
                   <span
                     style={{
-                      fontSize: 14,
+                      fontSize: 16,
                       paddingLeft: 5,
                       color: "GrayText",
                     }}

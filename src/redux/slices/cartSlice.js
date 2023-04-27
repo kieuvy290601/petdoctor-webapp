@@ -6,6 +6,7 @@ const initialState = {
   cartItems: storedCartItems ? storedCartItems : [],
   totalAmount: 0,
   totalQuantity: 0,
+  shippingFee: 0,
 };
 
 // const initialState = {
@@ -47,12 +48,18 @@ const cartSlice = createSlice({
         (total, item) => total + Number(item.prdPrice) * Number(item.quantity),
         0
       );
+      state.totalAmount += state.shippingFee;
       // save cart to LS
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+
       console.log(state.totalQuantity);
       console.log(state.cartItems);
       console.log(newItem);
       console.log("total", state.totalAmount);
+    },
+    setShippingFee: (state, action) => {
+      state.shippingFee = action.payload;
+      state.totalAmount += action.payload; // Cập nhật tổng số tiền khi thay đổi phí ship
     },
     decreaseItemQuantity: (state, action) => {
       const itemId = action.payload;
@@ -85,11 +92,18 @@ const cartSlice = createSlice({
       }
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
+    clearCart: (state) => {
+      state.cartItems = initialState.cartItems;
+      state.totalAmount = initialState.totalAmount;
+      state.totalQuantity = initialState.totalQuantity;
+      state.shippingFee = initialState.shippingFee;
+      localStorage.removeItem("cartItems");
+    },
   },
 });
 
 export const cartActions = cartSlice.actions;
-export const { addItemtoCart, decreaseItemQuantity, removeItemFromCart } =
+export const { addItemtoCart, decreaseItemQuantity, removeItemFromCart, clearCart } =
   cartSlice.actions;
 export const selectCartItems = (state) => state.cart.cartItems;
 export default cartSlice.reducer;

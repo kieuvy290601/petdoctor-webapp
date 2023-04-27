@@ -54,8 +54,7 @@ const AllProduct = () => {
       prdURL: product.prdURL,
     });
     setShowEdit(true);
-      setProduct({ ...initialState });
-
+    setProduct({ ...initialState });
   };
 
   const dispatch = useDispatch();
@@ -82,8 +81,8 @@ const AllProduct = () => {
 
   const initialState = {
     prdName: "",
-    prdPrice: 0,
-    prdQuantity: 0,
+    prdPrice: null,
+    prdQuantity: null,
     prdCategory: "",
     prdSubCategory: "",
     prdDesc: "",
@@ -227,11 +226,10 @@ const AllProduct = () => {
       const querySnapshot = await getDocs(
         query(collection(db, "products"), orderBy("createAt", "desc"))
       );
-      const data = querySnapshot.docs
-        .map((doc) => ({
-          uid: doc.id,
-          ...doc.data(),
-        }));
+      const data = querySnapshot.docs.map((doc) => ({
+        uid: doc.id,
+        ...doc.data(),
+      }));
       setData(data);
 
       setProduct({ ...initialState });
@@ -359,11 +357,12 @@ const AllProduct = () => {
 
                     <div className="row gx-3">
                       <div className="col-md-6">
-                        <label>Product Price *</label>
+                        <label className="my-1">Product Price *</label>
                         <input
-                          type="text"
-                          className="border"
+                          type="number"
+                          className="border mb-1"
                           name="prdPrice"
+                          style={{ width: "100%" }}
                           placeholder="Example: 350"
                           value={product.prdPrice}
                           onChange={(e) => handleInputChange(e)}
@@ -371,10 +370,11 @@ const AllProduct = () => {
                         />
                       </div>
                       <div className="col-md-6">
-                        <label>Available Quantity *</label>
+                        <label className="my-1">Available Quantity *</label>
                         <input
-                          type="text"
-                          className="border"
+                          type="number"
+                          style={{ width: "100%" }}
+                          className="border mb-1"
                           name="prdQuantity"
                           placeholder="Example: 350"
                           value={product.prdQuantity}

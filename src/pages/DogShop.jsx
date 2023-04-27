@@ -63,7 +63,7 @@ const DogPharm = () => {
 
   const handleSortOrderChange = () => {
     // Step 2
-    setSortOrder(sortOrder);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
   return (
@@ -79,7 +79,7 @@ const DogPharm = () => {
                     <h2 className="section_title">All Products</h2>
                   </Col>
                   <Col lg="8" md="6">
-                    <div className="search_box">
+                    <div className="search_box" style={{ height: "77%" }}>
                       <input
                         className="search-prd"
                         style={{ background: "none", paddingBottom: 10 }}

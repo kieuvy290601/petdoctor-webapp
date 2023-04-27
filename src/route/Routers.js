@@ -7,7 +7,9 @@ import ResetPassword from "../pages/Auth/ResetPassword";
 import Signup from "../pages/Auth/Signup";
 import Cart from "../pages/Cart";
 import CatShop from "../pages/CatShop";
-import Checkout from "../pages/Checkout";
+import Checkout from "../pages/Checkout/Checkout";
+import Payment from "../pages/Checkout/Payment";
+import PaymentSuccess from "../pages/Checkout/PaymentSuccess";
 import DogShop from "../pages/DogShop";
 import Home from "../pages/Home";
 import ProductDetail from "../pages/ProductDetail";
@@ -53,6 +55,22 @@ const Routers = () => {
         element={
           <ProtectedRoute>
             <Cart />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="pay"
+        element={
+          <ProtectedRoute>
+            <Payment />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="payment-success"
+        element={
+          <ProtectedRoute>
+            <PaymentSuccess />
           </ProtectedRoute>
         }
       />
