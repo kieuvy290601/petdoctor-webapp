@@ -11,21 +11,18 @@ app.get("/", (req, res) => {
 });
 
 // const array = [];
-// const calculateOrderAmount = (items, shippingFee) => {
-//     const array = [];
-//   items.forEach((item) => {
-//     const { prdPrice, quantity } = item;
-//     const cartItemAmount = prdPrice * quantity;
-//     array.push(cartItemAmount);
-//   });
-//   const totalAmount = array.reduce((a, b) => {
-//     return a + b;
-//   }, 0);
+const calculateOrderAmount = (items, shippingFee) => {
+  // Calculate the total amount on the server-side
+  const totalAmount =
+    items.reduce((total, item) => total + item.prdPrice * item.quantity, 0) +
+    shippingFee;
 
-//   // Thêm phí vận chuyển vào tổng giá trị đơn hàng
-//   const orderAmount = totalAmount + shippingFee;
-//   return orderAmount;
-// };
+  const orderAmount = totalAmount * 100;
+
+  //   // Thêm phí vận chuyển vào tổng giá trị đơn hàng
+  //   const orderAmount = totalAmount + shippingFee;
+  return orderAmount;
+};
 
 app.post("/create-payment-intent", async (req, res) => {
   const { items, shipping, description, shippingFee } = req.body;
@@ -34,10 +31,14 @@ app.post("/create-payment-intent", async (req, res) => {
   const totalAmount =
     items.reduce((total, item) => total + item.prdPrice * item.quantity, 0) +
     shippingFee;
+  
+  const orderAmount = totalAmount * 100;
 
+  
   // Create a PaymentIntent with the order amount and currency
+
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalAmount * 100,
+    amount: calculateOrderAmount(items, shippingFee),
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,
@@ -57,7 +58,7 @@ app.post("/create-payment-intent", async (req, res) => {
 
   res.send({
     clientSecret: paymentIntent.client_secret,
-    totalAmount,
+    orderAmount,
   });
 });
 

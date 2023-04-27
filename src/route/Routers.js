@@ -7,6 +7,7 @@ import ResetPassword from "../pages/Auth/ResetPassword";
 import Signup from "../pages/Auth/Signup";
 import Cart from "../pages/Cart";
 import CatShop from "../pages/CatShop";
+import OrderHistory from "../pages/OrderHistory";
 import Checkout from "../pages/Checkout/Checkout";
 import Payment from "../pages/Checkout/Payment";
 import PaymentSuccess from "../pages/Checkout/PaymentSuccess";
@@ -71,6 +72,14 @@ const Routers = () => {
         element={
           <ProtectedRoute>
             <PaymentSuccess />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="orderhistory"
+        element={
+          <ProtectedRoute>
+            <OrderHistory />
           </ProtectedRoute>
         }
       />

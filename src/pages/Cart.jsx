@@ -16,7 +16,7 @@ const Cart = () => {
 
   // TODO: Set show totol quantity
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
-  const totalAmount = useSelector((state) => state.cart.totalAmount).toFixed(2);
+  const totalAmount = useSelector((state) => state.cart.totalAmount);
   const [shippingOption, setShippingOption] = useState(null);
 
   const handleShippingOptionChange = (option) => {

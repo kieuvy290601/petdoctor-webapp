@@ -3,13 +3,17 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import { Timestamp, addDoc, collection } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import spinner from "../../assets/images/spinner.gif";
+import { db } from "../../firebase.config";
+import { selectEmail, selectUserID } from "../../redux/slices/authSlice";
+import { cartActions, selectCartItems } from "../../redux/slices/cartSlice";
+import { selectShippingAddress } from "../../redux/slices/checkoutSlice";
 import CheckoutSummary from "./CheckoutSummary";
-import { useDispatch } from "react-redux";
-import { cartActions } from "../../redux/slices/cartSlice";
-import spinner from "../../assets/images/spinner.gif"
-
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -19,7 +23,14 @@ const PaymentForm = () => {
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const userID = useSelector(selectUserID);
+  const userEmail = useSelector(selectEmail);
+  const cartItems = useSelector(selectCartItems);
+  const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const shippingAddress = useSelector(selectShippingAddress);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!stripe) {
@@ -36,8 +47,28 @@ const PaymentForm = () => {
   }, [stripe]);
 
   const storeOrder = () => {
-    console.log("Order store successful");
-    dispatch(cartActions.clearCart);
+    const today = new Date();
+    const date = today.toDateString();
+    const time = today.toLocaleTimeString();
+    const orderConfig = {
+      userID,
+      userEmail,
+      orderDate: date,
+      orderTime: time,
+      orderAmount: totalAmount,
+      orderStatus: "Order Placed...",
+      cartItems,
+      shippingAddress,
+      createdAt: Timestamp.now().toDate(),
+    };
+    try {
+      addDoc(collection(db, "orders"), orderConfig);
+      dispatch(cartActions.clearCart());
+      toast.success("Order saved");
+      navigate("/payment-success");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -57,7 +88,7 @@ const PaymentForm = () => {
           // Make sure to change this to your payment completion page
           return_url: "http://localhost:3000/payment-success",
         },
-        redirect_url: "if_required",
+        redirect: "if_required",
       })
       .then((result) => {
         if (result.error) {
