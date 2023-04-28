@@ -20,6 +20,7 @@ import Splash from "../pages/Splash";
 import AdminRoute from "./AdminOnly/AdminRoute.jsx";
 import AdminRouter from "./AdminOnly/AdminRouter.jsx";
 import ProtectedRoute from "./ProtectedRoute";
+import ReviewProduct from "../pages/ReviewProduct";
 
 const Routers = () => {
   return (
@@ -89,6 +90,14 @@ const Routers = () => {
         element={
           <ProtectedRoute>
             <OrderDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="reviewproduct/:prdId"
+        element={
+          <ProtectedRoute>
+            <ReviewProduct />
           </ProtectedRoute>
         }
       />

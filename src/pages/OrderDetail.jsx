@@ -75,7 +75,7 @@ const OrderDetail = () => {
                 </td>
 
                 <td style={{ paddingLeft: 30 }}>
-                  <Link to={`/review-product/${item.prdId}`}>
+                  <Link to={`/reviewproduct/${item.prdId}`}>
                     <button
                       style={{
                         padding: "8px 12px",
