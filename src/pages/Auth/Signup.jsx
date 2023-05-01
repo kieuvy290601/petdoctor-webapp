@@ -21,7 +21,6 @@ import { toast } from "react-toastify";
 import heroImg from "../.././assets/images/loginImg.png";
 import "../../styles/Signup.css";
 
-
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -90,8 +89,8 @@ const Signup = () => {
 
       //setLoading(true);
       console.log("Account created");
-      console.log(user)
-    toast.success("Account created");
+      console.log(user);
+      toast.success("Account created");
       navigate("/home");
     } catch (error) {
       //setLoading(false);
@@ -139,6 +138,11 @@ const Signup = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                />
+
+                <input
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
                 />
 
                 <button type="submit" className="button_signup">
